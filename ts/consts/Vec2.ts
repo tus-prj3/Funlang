@@ -41,4 +41,8 @@ export class Vec2 {
     }
     return 360 + Math.atan(dy / -dx) * 180 / Math.PI
   }
+
+  public distance(to: Vec2): number {
+    return Math.sqrt((this.x - to.getX) ** 2 + (this.y - to.getY) ** 2)
+  }
 }
