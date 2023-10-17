@@ -1,0 +1,20 @@
+{
+  "name": "funlang",
+  "version": "1.0.0",
+  "description": "Visual programming language to assist in learning functional languages",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "webpack",
+    "hot": "webpack serve"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
