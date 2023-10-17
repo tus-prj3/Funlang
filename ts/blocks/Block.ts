@@ -1,3 +1,6 @@
+import {Direction} from "../consts/Direction";
+import {Vec2} from "../consts/Vec2";
+
 export class Block {
   private x: number
   private y: number
@@ -7,8 +10,7 @@ export class Block {
 
   private readonly element: HTMLElement
 
-  private parent: Block | null
-  private children: Block[]
+  private neighbor: [Direction, Block][]
 
   // ドラッグ開始時のブロック位置
   private dragStartBlockX: number = 0
@@ -23,8 +25,7 @@ export class Block {
     this.height = height
     this.identifier = identifier
 
-    this.parent = null
-    this.children = []
+    this.neighbor = []
 
     this.element = document.createElement("div")
     this.element.style.left = x + "px"
@@ -35,6 +36,37 @@ export class Block {
 
     this.element.onmousedown = this.onMouseDown
     document.getElementById('workspace')?.appendChild(this.element)
+  }
+
+  /** 指定された方向の辺の中央の座標を返します */
+  public middlePoint(dir: Direction): Vec2 {
+    switch (dir) {
+      case Direction.UP:
+        return new Vec2(this.x + this.width / 2, this.y)
+      case Direction.DOWN:
+        return new Vec2(this.x + this.width / 2, this.y + this.height)
+      case Direction.LEFT:
+        return new Vec2(this.x, this.y + this.height / 2)
+      case Direction.RIGHT:
+        return new Vec2(this.x + this.width, this.y + this.height / 2)
+    }
+  }
+
+  public get center(): Vec2 {
+    return new Vec2(this.x + this.width / 2, this.y + this.height / 2)
+  }
+
+  /** このブロックから見て指定された座標がどの方向にあるかを返します */
+  public calcDirection(x: number, y: number): Direction {
+    const angle = this.center.angle(new Vec2(x, y))
+    if (45 <= angle && angle < 135) {
+      return Direction.UP
+    } else if (135 <= angle && angle < 215) {
+      return Direction.LEFT
+    } else if (215 <= angle && angle < 305) {
+      return Direction.DOWN
+    }
+    return Direction.RIGHT
   }
 
   private setPosition(x: number, y: number) {
@@ -61,12 +93,8 @@ export class Block {
   }
 
   private onMouseUp = () => {
+    console.info(this.calcDirection(100, 100))
     document.removeEventListener('mousemove', this.onMouseMove)
     document.removeEventListener('mouseup', this.onMouseUp)
-  }
-
-  private repaint = () => {
-    this.element.style.left = this.x + "px";
-    this.element.style.top = this.y + "px";
   }
 }
