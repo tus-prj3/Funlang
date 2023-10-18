@@ -1,7 +1,7 @@
 import {Direction} from "../consts/Direction";
 import {Vec2} from "../consts/Vec2";
 import {getRandomColor} from "../consts/Color";
-import {blockStore} from "../index";
+import {blockSelectionStore, blockStore} from "../index";
 
 export class Block {
   private x: number
@@ -12,7 +12,10 @@ export class Block {
 
   private readonly element: HTMLElement
 
-  private neighbor: [Direction, Block][]
+  private parent: Block | null
+  private child: Block | null
+  private next: Block | null
+  private prev: Block | null
 
   // ドラッグ開始時のブロック位置
   private dragStartBlockX: number = 0
@@ -27,7 +30,10 @@ export class Block {
     this.height = height
     this.identifier = identifier
 
-    this.neighbor = []
+    this.parent = null
+    this.child = null
+    this.next = null
+    this.prev = null
 
     this.element = document.createElement("div")
     this.element.style.left = x + "px"
@@ -57,7 +63,7 @@ export class Block {
   }
 
   /** 指定された方向にブロックを結合した際に, 結合するブロックの設定すべき座標を返します */
-  public concatBlockPoint(dir: Direction, block: Block): Vec2 {
+  public connectBlockPoint(dir: Direction, block: Block): Vec2 {
     switch (dir) {
       case Direction.UP:
         return new Vec2(this.x, this.y - block.height)
@@ -76,6 +82,30 @@ export class Block {
 
   public get getIdentifier() {
     return this.identifier
+  }
+
+  public get hasChild() {
+    return this.child != null
+  }
+
+  public get hasNext() {
+    return this.next != null
+  }
+
+  public get hasPrev() {
+    return this.prev != null
+  }
+
+  public get hasParent() {
+    return this.parent != null
+  }
+
+  public get getChild() {
+    return this.child
+  }
+
+  public get getNext() {
+    return this.next
   }
 
   /** このブロックから見て指定された座標がどの方向にあるかを返します */
@@ -97,22 +127,32 @@ export class Block {
 
   private highlightSide(to: Vec2) {
     const side = this.calcDirection(to)
-    switch (side) {
-      case Direction.UP:
-        this.element.style.border = 'none'
-        this.element.style.borderTop = '4px solid red'
-        break
-      case Direction.RIGHT:
-        this.element.style.border = 'none'
-        this.element.style.borderRight = '4px solid red'
-        break
-      case Direction.DOWN:
-        this.element.style.border = 'none'
-        this.element.style.borderBottom = '4px solid red'
-        break
-      case Direction.LEFT:
-        this.element.style.border = 'none'
-        this.element.style.borderLeft = '4px solid red'
+    if (!this.hasChild && side == Direction.RIGHT) {
+      this.element.style.border = 'none'
+      this.element.style.borderRight = '4px solid red'
+    } else if (!this.hasNext && side == Direction.DOWN) {
+      this.element.style.border = 'none'
+      this.element.style.borderBottom = '4px solid red'
+    } else if (side == Direction.RIGHT) {
+      this.element.style.border = 'none'
+      this.element.style.borderRight = '4px solid red'
+    } else if (side == Direction.DOWN) {
+      this.element.style.border = 'none'
+      this.element.style.borderBottom = '4px solid red'
+    }
+  }
+
+  /** ブロックを接続します */
+  private connect(block: Block) {
+    const side = this.calcDirection(block.center)
+    if (!this.hasChild && side == Direction.RIGHT) {
+      block.setPosition(this.connectBlockPoint(Direction.RIGHT, block))
+    } else if (!this.hasNext && side == Direction.DOWN) {
+      block.setPosition(this.connectBlockPoint(Direction.DOWN, block))
+    } else if (side == Direction.RIGHT) {
+      block.setPosition(this.connectBlockPoint(Direction.RIGHT, block))
+    } else if (side == Direction.DOWN) {
+      block.setPosition(this.connectBlockPoint(Direction.DOWN, block))
     }
   }
 
@@ -124,15 +164,19 @@ export class Block {
   }
 
   private onMouseDown = (e: MouseEvent) => {
+    if (this.hasParent) {
+      this.parent!.child = null
+      this.parent = null
+    }
+    if (this.hasPrev) {
+      this.prev!.next = null
+      this.prev = null
+    }
+
     this.dragStartBlockX = this.x
     this.dragStartBlockY = this.y
     this.dragStartCursorX = e.x
     this.dragStartCursorY = e.y
-
-    this.neighbor.forEach(([_, block]) => {
-      block.dragStartBlockX = block.x
-      block.dragStartBlockY = block.y
-    })
 
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.onMouseUp)
@@ -147,7 +191,7 @@ export class Block {
       block.element.style.border = 'none'
     })
     const nearestBlock = blockStore.getMinimumDistanceBlock(this)
-    if (nearestBlock != null) {
+    if (nearestBlock != null && nearestBlock.center.distance(this.center) <= 200) {
       nearestBlock.highlightSide(this.center)
     }
   }
@@ -156,25 +200,27 @@ export class Block {
     document.removeEventListener('mousemove', this.onMouseMove)
     document.removeEventListener('mouseup', this.onMouseUp)
 
-    /*
-    const aroundBlocks = blockStore.blocks.filter((block) => {
-      return block.isInRange(130, this.center)
-    })
-    if (aroundBlocks.length != 0) {
-      const concatBlock = aroundBlocks[0]
-      const direction = concatBlock.calcDirection(this.center)
-      this.neighbor.push(
-        [direction, concatBlock]
-      )
-      this.setPosition(
-        concatBlock.concatBlockPoint(direction, this)
-      )
-      blockStore.blocks = blockStore.blocks.filter((block) => block.identifier != concatBlock.identifier)
-    }*/
+    const nearestBlock = blockStore.getMinimumDistanceBlock(this)
+    if (nearestBlock != null && nearestBlock.center.distance(this.center) <= 200) {
+      nearestBlock.connect(this)
+      const side = nearestBlock.calcDirection(this.center)
+      if (!nearestBlock.hasChild && side == Direction.RIGHT) {
+        this.parent = nearestBlock
+        nearestBlock.child = this
+      } else if (!nearestBlock.hasNext && side == Direction.DOWN) {
+        this.prev = nearestBlock
+        nearestBlock.next = this
+      } else if (side == Direction.RIGHT) {
+        this.parent = nearestBlock
+        nearestBlock.child = this
+      } else if (side == Direction.DOWN) {
+        this.prev = nearestBlock
+        nearestBlock.next = this
+      }
+    }
+
     blockStore.blocks.forEach((block) => {
       block.element.style.border = 'none'
     })
-
-    // console.info(blockStore.blocks)
   }
 }
