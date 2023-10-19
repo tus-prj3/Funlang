@@ -1,4 +1,4 @@
-import { Block } from "../blocks/Block";
+import { Block } from "../block/Block";
 
 export class BlockStore {
   blocks: Block[] = []

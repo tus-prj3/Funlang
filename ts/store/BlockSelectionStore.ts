@@ -1,4 +1,4 @@
-import {Block} from "../blocks/Block";
+import {Block} from "../block/Block";
 import {blockStore} from "../index";
 
 export class BlockSelectionStore {
@@ -15,9 +15,9 @@ export class BlockSelectionStore {
       }
       result.push(block)
       searched.set(block.getIdentifier, true)
-      if (block.hasChild) {
+      /*if (block.hasChild) {
         search(block.getChild!)
-      }
+      }*/
       if (block.hasNext) {
         search(block.getNext!)
       }
