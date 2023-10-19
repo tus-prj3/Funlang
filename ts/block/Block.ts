@@ -1,24 +1,21 @@
-import {Direction} from "../consts/Direction";
-import {Vec2} from "../consts/Vec2";
-import {getRandomColor} from "../consts/Color";
+import {Direction} from "../types/Direction";
+import {Vec2} from "../types/Vec2";
+import {getRandomColor} from "../types/Color";
 import {blockStore} from "../index";
-import {ConnectFilter} from "../util/ConnectFilter";
-import {BlockType} from "./BlockType";
+import {IBlockPosition} from "../interface/IBlockPosition";
+import {OuterBlock} from "./internal";
 
-export class Block {
-  private x: number
-  private y: number
-  private readonly width: number
-  private readonly height: number
-  private readonly identifier: string
+export class Block implements IBlockPosition {
+  public x: number
+  public y: number
+  public readonly width: number
+  public readonly height: number
+  public readonly identifier: string
 
-  private readonly element: HTMLElement
+  protected readonly element: HTMLElement
 
   private next: Block | null
   private prev: Block | null
-
-  private connectFilter: Map<Direction, Array<ConnectFilter>> = new Map<Direction, Array<ConnectFilter>>()
-  private type: BlockType
 
   // ドラッグ開始時のブロック位置
   private dragStartBlockX: number = 0
@@ -27,9 +24,9 @@ export class Block {
   private dragStartCursorX: number = 0
   private dragStartCursorY: number = 0
 
-  constructor(x: number, y: number, width: number, height: number, identifier: string, connectFilter: Map<Direction, Array<ConnectFilter>>, type: BlockType, appendClass: string = 'block_without_color') {
-    this.x = x
-    this.y = y
+  constructor(pos: Vec2, width: number, height: number, identifier: string, appendClass: string = 'block_without_color') {
+    this.x = pos.getX
+    this.y = pos.getY
     this.width = width
     this.height = height
     this.identifier = identifier
@@ -38,14 +35,11 @@ export class Block {
     this.prev = null
 
     this.element = document.createElement("div")
-    this.element.style.left = x + "px"
-    this.element.style.top = y + "px"
+    this.element.style.left = pos.getX + "px"
+    this.element.style.top = pos.getY + "px"
     this.element.style.width = width + "px"
     this.element.style.height = height + "px"
     this.element.className = appendClass
-
-    this.connectFilter = connectFilter
-    this.type = type
 
     this.element.style.background = getRandomColor()
 
@@ -81,12 +75,8 @@ export class Block {
     }
   }
 
-  public get center(): Vec2 {
+  public center(): Vec2 {
     return new Vec2(this.x + this.width / 2, this.y + this.height / 2)
-  }
-
-  public get getIdentifier() {
-    return this.identifier
   }
 
   public get hasNext() {
@@ -101,9 +91,13 @@ export class Block {
     return this.next
   }
 
+  public get getPrev() {
+    return this.prev
+  }
+
   /** このブロックから見て指定された座標がどの方向にあるかを返します */
   public calcDirection(to: Vec2): Direction {
-    const angle = this.center.angle(to)
+    const angle = this.center().angle(to)
     if (45 <= angle && angle < 135) {
       return Direction.DOWN
     } else if (135 <= angle && angle < 215) {
@@ -115,50 +109,23 @@ export class Block {
   }
 
   private isInRange(range: number, to: Vec2) {
-    return this.center.distance(to) <= range;
+    return this.center().distance(to) <= range;
   }
 
   public canConnect(targetBlock: Block) {
-    const side = this.calcDirection(targetBlock.center)
-    const connectFilters: Array<ConnectFilter> | undefined = this.connectFilter.get(side)
-    if (connectFilters == undefined) {
-      return false
-    }
-    return connectFilters.filter((filter) => {
-      return filter.getFilter(targetBlock)
-    }).length > 0
+    const side = this.calcDirection(targetBlock.center())
+    return side === Direction.DOWN && targetBlock.center().distance(this.center()) <= 200
   }
 
   private highlightSide(targetBlock: Block) {
-    const side = this.calcDirection(targetBlock.center)
-    if (this.canConnect(targetBlock)) {
-      switch (side) {
-        case Direction.UP:
-          this.element.style.border = 'none'
-          this.element.style.borderTop = '4px solid red'
-          break
-        case Direction.DOWN:
-          this.element.style.border = 'none'
-          this.element.style.borderBottom = '4px solid red'
-          break
-        case Direction.RIGHT:
-          this.element.style.border = 'none'
-          this.element.style.borderRight = '4px solid red'
-          break
-        case Direction.LEFT:
-          this.element.style.border = 'none'
-          this.element.style.borderLeft = '4px solid red'
-          break
-      }
-    }
+    this.element.style.border = 'none'
+    this.element.style.borderBottom = '4px solid red'
   }
 
   /** ブロックを接続します */
   private connect(block: Block) {
-    const side = this.calcDirection(block.center)
-    if (this.canConnect(block)) {
-      block.setPosition(this.connectBlockPoint(side, block))
-    }
+    const side = this.calcDirection(block.center())
+    block.setPosition(this.connectBlockPoint(side, block))
   }
 
   private setPosition(vec: Vec2) {
@@ -176,6 +143,7 @@ export class Block {
 
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.onMouseUp)
+    this.element.style.zIndex = '10'
   }
 
   private onMouseMove = (event: MouseEvent) => {
@@ -185,10 +153,17 @@ export class Block {
 
     blockStore.blocks.forEach((block) => {
       block.element.style.border = 'none'
+      if (block instanceof OuterBlock) {
+        block.removeHighlightChildren()
+      }
     })
     const nearestBlock = blockStore.getMinimumDistanceBlock(this)
-    if (nearestBlock != null && nearestBlock.center.distance(this.center) <= 200) {
-      nearestBlock.highlightSide(this)
+    if (nearestBlock != null) {
+      if (nearestBlock.canConnect(this)) {
+        nearestBlock.highlightSide(this)
+      } else if (nearestBlock instanceof OuterBlock) {
+        nearestBlock.highlightChild(this)
+      }
     }
   }
 
@@ -197,19 +172,16 @@ export class Block {
     document.removeEventListener('mouseup', this.onMouseUp)
 
     const nearestBlock = blockStore.getMinimumDistanceBlock(this)
-    if (nearestBlock != null && nearestBlock.center.distance(this.center) <= 200) {
+    if (nearestBlock != null && nearestBlock.canConnect(this)) {
       nearestBlock.connect(this)
 
-      // あまり良い設計ではないが, 下側に接続できたとき, それを親子関係とする
-      const side = nearestBlock.calcDirection(this.center)
-      if (side === Direction.DOWN) {
-        this.prev = nearestBlock
-        nearestBlock.next = this
-      }
+      this.prev = nearestBlock
+      nearestBlock.next = this
     }
 
     blockStore.blocks.forEach((block) => {
       block.element.style.border = 'none'
     })
+    this.element.style.zIndex = '0'
   }
 }

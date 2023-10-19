@@ -1,24 +1,30 @@
-import { Block } from "../block/Block";
+// noinspection all
+import { Block } from "../block/internal";
+import {IBlockPosition} from "../interface/IBlockPosition";
 
 export class BlockStore {
   blocks: Block[] = []
 
   public getMinimumDistanceBlock(block: Block): Block | null {
-    const targetBlocks = this.blocks.filter((bl) => bl.getIdentifier != block.getIdentifier)
-    if (targetBlocks.length == 0) {
-      return null
-    } else {
-      let resultBlock: Block | null = null
-      let minimumDistance = Infinity
-      for (let i = 0; i < targetBlocks.length; i++) {
-        const distance = targetBlocks[i].center.distance(block.center)
-        if (distance < minimumDistance) {
-          minimumDistance = distance
-          resultBlock = targetBlocks[i]
-        }
+    return getMinimumDistBlock(this.blocks, block)
+  }
+}
+
+export function getMinimumDistBlock<T extends IBlockPosition>(blocks: T[], target: T): T | null {
+  const targetBlocks = blocks.filter((bl) => bl !== target)
+  if (targetBlocks.length == 0) {
+    return null
+  } else {
+    let resultBlock: T | null = null
+    let minimumDistance = Infinity
+    for (let i = 0; i < targetBlocks.length; i++) {
+      const distance = targetBlocks[i].center().distance(target.center())
+      if (distance < minimumDistance) {
+        minimumDistance = distance
+        resultBlock = targetBlocks[i]
       }
-      return resultBlock
     }
+    return resultBlock
   }
 }
 
