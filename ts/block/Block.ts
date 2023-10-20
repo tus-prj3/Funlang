@@ -4,6 +4,7 @@ import {getRandomColor} from "../types/Color";
 import {blockStore} from "../index";
 import {IBlockPosition} from "../interface/IBlockPosition";
 import {OuterBlock} from "./internal";
+import {getMinimumDistBlock} from "../store/BlockStore";
 
 export class Block implements IBlockPosition {
   public x: number
@@ -12,10 +13,12 @@ export class Block implements IBlockPosition {
   public readonly height: number
   public readonly identifier: string
 
-  protected readonly element: HTMLElement
+  public readonly element: HTMLElement
 
   private next: Block | null
   private prev: Block | null
+  public parent: OuterBlock | null
+  public parentBlockPosition: IBlockPosition | null
 
   // ドラッグ開始時のブロック位置
   private dragStartBlockX: number = 0
@@ -34,12 +37,16 @@ export class Block implements IBlockPosition {
     this.next = null
     this.prev = null
 
+    this.parent = null
+    this.parentBlockPosition = null
+
     this.element = document.createElement("div")
     this.element.style.left = pos.getX + "px"
     this.element.style.top = pos.getY + "px"
     this.element.style.width = width + "px"
     this.element.style.height = height + "px"
     this.element.className = appendClass
+    this.element.style.zIndex = '1'
 
     this.element.style.background = getRandomColor()
 
@@ -95,6 +102,10 @@ export class Block implements IBlockPosition {
     return this.prev
   }
 
+  public get getZIndex() {
+    return parseInt(this.element.style.zIndex)
+  }
+
   /** このブロックから見て指定された座標がどの方向にあるかを返します */
   public calcDirection(to: Vec2): Direction {
     const angle = this.center().angle(to)
@@ -122,13 +133,33 @@ export class Block implements IBlockPosition {
     this.element.style.borderBottom = '4px solid red'
   }
 
-  /** ブロックを接続します */
-  private connect(block: Block) {
-    const side = this.calcDirection(block.center())
-    block.setPosition(this.connectBlockPoint(side, block))
+  public connectedNextBlocks() {
+    const result: Block[] = []
+    const search = (block: Block | null) => {
+      if (block == null) {
+        return
+      }
+      result.push(block)
+      if (block.hasNext) {
+        search(block.getNext!)
+      }
+    }
+
+    search(this)
+    return result
   }
 
-  private setPosition(vec: Vec2) {
+  /** ブロックを接続します */
+  private connect(block: Block) {
+    let connectTo: Block = block
+    for (let target of this.connectedNextBlocks()) {
+      const side = connectTo.calcDirection(target.center())
+      target.setPosition(connectTo.connectBlockPoint(side, target))
+      connectTo = target
+    }
+  }
+
+  public setPosition(vec: Vec2) {
     this.x = vec.getX
     this.y = vec.getY
     this.element.style.left = vec.getX + "px"
@@ -136,20 +167,50 @@ export class Block implements IBlockPosition {
   }
 
   private onMouseDown = (e: MouseEvent) => {
-    this.dragStartBlockX = this.x
-    this.dragStartBlockY = this.y
-    this.dragStartCursorX = e.x
-    this.dragStartCursorY = e.y
+    this.connectedNextBlocks().forEach((block) => {
+      block.dragStartBlockX = block.x
+      block.dragStartBlockY = block.y
+      block.dragStartCursorX = e.x
+      block.dragStartCursorY = e.y
+
+      if (block instanceof OuterBlock) {
+        block.getChildren.forEach((child) => {
+          child.dragStartBlockX = child.x
+          child.dragStartBlockY = child.y
+          child.dragStartCursorX = e.x
+          child.dragStartCursorY = e.y
+        })
+      }
+    })
+    if (this.hasPrev) {
+      this.prev!.next = null
+      this.prev = null
+    }
+    if (this.parent != null) {
+      this.parent.childrenPositions.get(this.parentBlockPosition!)!.style.visibility = 'visible'
+      this.parent.children.delete(this.parentBlockPosition!)
+      this.parent = null
+      this.parentBlockPosition = null
+    }
 
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.onMouseUp)
-    this.element.style.zIndex = '10'
   }
 
   private onMouseMove = (event: MouseEvent) => {
-    const blockX = this.dragStartBlockX + (event.x - this.dragStartCursorX)
-    const blockY = this.dragStartBlockY + (event.y - this.dragStartCursorY)
-    this.setPosition(new Vec2(blockX, blockY))
+    this.connectedNextBlocks().forEach((block) => {
+      const blockX = block.dragStartBlockX + (event.x - block.dragStartCursorX)
+      const blockY = block.dragStartBlockY + (event.y - block.dragStartCursorY)
+      block.setPosition(new Vec2(blockX, blockY))
+
+      if (block instanceof OuterBlock) {
+        block.getChildren.forEach((child) => {
+          const blockX = child.dragStartBlockX + (event.x - child.dragStartCursorX)
+          const blockY = child.dragStartBlockY + (event.y - child.dragStartCursorY)
+          child.setPosition(new Vec2(blockX, blockY))
+        })
+      }
+    })
 
     blockStore.blocks.forEach((block) => {
       block.element.style.border = 'none'
@@ -157,7 +218,10 @@ export class Block implements IBlockPosition {
         block.removeHighlightChildren()
       }
     })
-    const nearestBlock = blockStore.getMinimumDistanceBlock(this)
+
+    const connectedBlocks = this.connectedNextBlocks()
+    const searchBlocks = blockStore.blocks.filter((block) => !connectedBlocks.includes(block))
+    const nearestBlock = getMinimumDistBlock(searchBlocks, this)
     if (nearestBlock != null) {
       if (nearestBlock.canConnect(this)) {
         nearestBlock.highlightSide(this)
@@ -171,17 +235,23 @@ export class Block implements IBlockPosition {
     document.removeEventListener('mousemove', this.onMouseMove)
     document.removeEventListener('mouseup', this.onMouseUp)
 
-    const nearestBlock = blockStore.getMinimumDistanceBlock(this)
-    if (nearestBlock != null && nearestBlock.canConnect(this)) {
-      nearestBlock.connect(this)
+    const connectedBlocks = this.connectedNextBlocks()
+    const searchBlocks = blockStore.blocks.filter((block) => !connectedBlocks.includes(block))
+    const nearestBlock = getMinimumDistBlock(searchBlocks, this)
+    if (nearestBlock != null) {
+      if (nearestBlock.canConnect(this)) {
+        this.connect(nearestBlock)
 
-      this.prev = nearestBlock
-      nearestBlock.next = this
+        this.prev = nearestBlock
+        nearestBlock.next = this
+        this.element.style.zIndex = '1'
+      } else if (nearestBlock instanceof OuterBlock) {
+        nearestBlock.innerConnect(this)
+      }
     }
 
     blockStore.blocks.forEach((block) => {
       block.element.style.border = 'none'
     })
-    this.element.style.zIndex = '0'
   }
 }
