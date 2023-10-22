@@ -46,7 +46,6 @@ export class Block implements IBlockPosition {
     this.element.style.width = width + "px"
     this.element.style.height = height + "px"
     this.element.className = appendClass
-    this.element.style.zIndex = '1'
 
     this.element.style.background = getRandomColor()
 
@@ -166,6 +165,15 @@ export class Block implements IBlockPosition {
     this.element.style.top = vec.getY + "px"
   }
 
+  public setRelativePosition(vec: Vec2) {
+    this.element.style.left = vec.getX + "px"
+    this.element.style.top = vec.getY + "px"
+    const pos = this.element.getBoundingClientRect()
+    const workspace = document.getElementById('workspace')!.getBoundingClientRect()
+    this.x = pos.x - workspace.x
+    this.y = pos.y - workspace.y
+  }
+
   private onMouseDown = (e: MouseEvent) => {
     this.connectedNextBlocks().forEach((block) => {
       block.dragStartBlockX = block.x
@@ -174,11 +182,13 @@ export class Block implements IBlockPosition {
       block.dragStartCursorY = e.y
 
       if (block instanceof OuterBlock) {
-        block.getChildren.forEach((child) => {
-          child.dragStartBlockX = child.x
-          child.dragStartBlockY = child.y
-          child.dragStartCursorX = e.x
-          child.dragStartCursorY = e.y
+        block.getChildren.forEach((children) => {
+          children.forEach((child) => {
+            child.dragStartBlockX = child.x
+            child.dragStartBlockY = child.y
+            child.dragStartCursorX = e.x
+            child.dragStartCursorY = e.y
+          })
         })
       }
     })
@@ -187,29 +197,41 @@ export class Block implements IBlockPosition {
       this.prev = null
     }
     if (this.parent != null) {
+      console.info(this)
+      this.parent.dispatched = true
       this.parent.childrenPositions.get(this.parentBlockPosition!)!.style.visibility = 'visible'
-      this.parent.children.delete(this.parentBlockPosition!)
-      this.parent = null
-      this.parentBlockPosition = null
+
+      const connectedBlocks = this.connectedNextBlocks()
+      const childrenBlocks = this.parent.children.get(this.parentBlockPosition!)!
+      this.parent.children.set(this.parentBlockPosition!, childrenBlocks.filter((block) => !connectedBlocks.includes(block)))
+
+      connectedBlocks.forEach((block) => {
+        const nextAbsolutePos = block.element.getBoundingClientRect()
+        const workspacePos = document.getElementById('workspace')!.getBoundingClientRect()
+        block.setPosition(new Vec2(nextAbsolutePos.x - workspacePos.left + 10, nextAbsolutePos.y - workspacePos.top + 10))
+        block.dragStartBlockX = block.x
+        block.dragStartBlockY = block.y
+        document.getElementById('workspace')!.appendChild(block.element)
+        block.parent = null
+        block.parentBlockPosition = null
+      })
+    }
+
+    // TODO: OuterBlock を Block と併合することを考えるべき
+    if (this instanceof OuterBlock && this.dispatched) {
+      this.dispatched = false
+      return
     }
 
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.onMouseUp)
   }
 
-  private onMouseMove = (event: MouseEvent) => {
+  protected onMouseMove = (event: MouseEvent) => {
     this.connectedNextBlocks().forEach((block) => {
       const blockX = block.dragStartBlockX + (event.x - block.dragStartCursorX)
       const blockY = block.dragStartBlockY + (event.y - block.dragStartCursorY)
       block.setPosition(new Vec2(blockX, blockY))
-
-      if (block instanceof OuterBlock) {
-        block.getChildren.forEach((child) => {
-          const blockX = child.dragStartBlockX + (event.x - child.dragStartCursorX)
-          const blockY = child.dragStartBlockY + (event.y - child.dragStartCursorY)
-          child.setPosition(new Vec2(blockX, blockY))
-        })
-      }
     })
 
     blockStore.blocks.forEach((block) => {
@@ -220,7 +242,13 @@ export class Block implements IBlockPosition {
     })
 
     const connectedBlocks = this.connectedNextBlocks()
-    const searchBlocks = blockStore.blocks.filter((block) => !connectedBlocks.includes(block))
+    let childrenBlocks: Block[] = []
+    blockStore.blocks.forEach((block) => {
+      if (block instanceof OuterBlock) {
+        childrenBlocks = childrenBlocks.concat(Array.from(block.children.values()).flat())
+      }
+    })
+    const searchBlocks = blockStore.blocks.filter((block) => !connectedBlocks.includes(block) && !childrenBlocks.includes(block))
     const nearestBlock = getMinimumDistBlock(searchBlocks, this)
     if (nearestBlock != null) {
       if (nearestBlock.canConnect(this)) {
@@ -231,12 +259,18 @@ export class Block implements IBlockPosition {
     }
   }
 
-  private onMouseUp = () => {
+  protected onMouseUp = () => {
     document.removeEventListener('mousemove', this.onMouseMove)
     document.removeEventListener('mouseup', this.onMouseUp)
 
     const connectedBlocks = this.connectedNextBlocks()
-    const searchBlocks = blockStore.blocks.filter((block) => !connectedBlocks.includes(block))
+    let childrenBlocks: Block[] = []
+    blockStore.blocks.forEach((block) => {
+      if (block instanceof OuterBlock) {
+        childrenBlocks = childrenBlocks.concat(Array.from(block.children.values()).flat())
+      }
+    })
+    const searchBlocks = blockStore.blocks.filter((block) => !connectedBlocks.includes(block) && !childrenBlocks.includes(block))
     const nearestBlock = getMinimumDistBlock(searchBlocks, this)
     if (nearestBlock != null) {
       if (nearestBlock.canConnect(this)) {
@@ -244,7 +278,6 @@ export class Block implements IBlockPosition {
 
         this.prev = nearestBlock
         nearestBlock.next = this
-        this.element.style.zIndex = '1'
       } else if (nearestBlock instanceof OuterBlock) {
         nearestBlock.innerConnect(this)
       }

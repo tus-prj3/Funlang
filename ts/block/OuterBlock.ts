@@ -7,7 +7,8 @@ import {blockStore} from "../index";
 
 export class OuterBlock extends Block {
   public readonly childrenPositions: Map<IBlockPosition, HTMLElement> = new Map<IBlockPosition, HTMLElement>()
-  public children: Map<IBlockPosition, Block> = new Map<IBlockPosition, Block>()
+  public children: Map<IBlockPosition, Array<Block>> = new Map<IBlockPosition, Array<Block>>()
+  public dispatched: boolean = false
 
   constructor(pos: Vec2, width: number, height: number, identifier: string, childrenPositions: IBlockPosition[]) {
     super(pos, width, height, identifier);
@@ -45,15 +46,32 @@ export class OuterBlock extends Block {
     if (nearestChild != null) {
       const nearestChildCenter = new Vec2(nearestChild.x + this.x + nearestChild.width / 2, nearestChild.y + this.y + nearestChild.height / 2)
       if (nearestChildCenter.distance(tryingToSetChildBlock.center()) <= 75) {
-        tryingToSetChildBlock.setPosition(new Vec2(nearestChild.x + this.x, nearestChild.y + this.y))
-        this.children.set(nearestChild, tryingToSetChildBlock)
+        let connectTo: Block = tryingToSetChildBlock
+        connectTo.setRelativePosition(new Vec2(nearestChild.x, nearestChild.y))
+        let height = nearestChild.y + connectTo.height
+
+        const innerConnectBlocks = [tryingToSetChildBlock]
+
+        for (let target of connectTo.connectedNextBlocks().filter((block) => block !== connectTo)) {
+          // TODO: 設計を見直す
+          target.setRelativePosition(new Vec2(nearestChild.x, height))
+          innerConnectBlocks.push(target)
+          connectTo = target
+          height += target.height
+        }
+        this.children.set(nearestChild, innerConnectBlocks)
 
         this.childrenPositions.get(nearestChild)!.style.border = ''
         this.childrenPositions.get(nearestChild)!.style.visibility = 'hidden'
-        tryingToSetChildBlock.parent = this
-        tryingToSetChildBlock.parentBlockPosition = nearestChild
 
-        tryingToSetChildBlock.element.style.zIndex = (tryingToSetChildBlock.getZIndex + 1).toString()
+        innerConnectBlocks.forEach((innerConnectBlock) => {
+          innerConnectBlock.parent = this
+          innerConnectBlock.parentBlockPosition = nearestChild
+
+          this.element.appendChild(
+            innerConnectBlock.element
+          )
+        })
       }
     }
   }
