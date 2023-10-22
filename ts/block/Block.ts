@@ -9,8 +9,10 @@ import {getMinimumDistBlock} from "../store/BlockStore";
 export class Block implements IBlockPosition {
   public x: number
   public y: number
-  public readonly width: number
-  public readonly height: number
+  public width: number
+  public height: number
+  public readonly initialHeight: number
+  public readonly initialWidth: number
   public readonly identifier: string
 
   public readonly element: HTMLElement
@@ -30,7 +32,9 @@ export class Block implements IBlockPosition {
   constructor(pos: Vec2, width: number, height: number, identifier: string, appendClass: string = 'block_without_color') {
     this.x = pos.getX
     this.y = pos.getY
+    this.initialWidth = width
     this.width = width
+    this.initialHeight = height
     this.height = height
     this.identifier = identifier
 
@@ -127,7 +131,7 @@ export class Block implements IBlockPosition {
     return side === Direction.DOWN && targetBlock.center().distance(this.center()) <= 200
   }
 
-  private highlightSide(targetBlock: Block) {
+  private highlightSide() {
     this.element.style.border = 'none'
     this.element.style.borderBottom = '4px solid red'
   }
@@ -174,6 +178,17 @@ export class Block implements IBlockPosition {
     this.y = pos.y - workspace.y
   }
 
+  // TODO: 幅を周囲に合わせて可変にする
+  public recalculateWidth() {
+    if (this.prev != null) {
+      this.width = this.prev.width
+      this.element.style.width = this.prev.width + 'px'
+    } else {
+      this.width = this.initialWidth
+      this.element.style.width = this.initialWidth + 'px'
+    }
+  }
+
   private onMouseDown = (e: MouseEvent) => {
     this.connectedNextBlocks().forEach((block) => {
       block.dragStartBlockX = block.x
@@ -195,6 +210,7 @@ export class Block implements IBlockPosition {
     if (this.hasPrev) {
       this.prev!.next = null
       this.prev = null
+      // this.recalculateWidth()
     }
     if (this.parent != null) {
       console.info(this)
@@ -204,6 +220,8 @@ export class Block implements IBlockPosition {
       const connectedBlocks = this.connectedNextBlocks()
       const childrenBlocks = this.parent.children.get(this.parentBlockPosition!)!
       this.parent.children.set(this.parentBlockPosition!, childrenBlocks.filter((block) => !connectedBlocks.includes(block)))
+
+      this.parent.recalculateHeight()
 
       connectedBlocks.forEach((block) => {
         const nextAbsolutePos = block.element.getBoundingClientRect()
@@ -252,7 +270,7 @@ export class Block implements IBlockPosition {
     const nearestBlock = getMinimumDistBlock(searchBlocks, this)
     if (nearestBlock != null) {
       if (nearestBlock.canConnect(this)) {
-        nearestBlock.highlightSide(this)
+        nearestBlock.highlightSide()
       } else if (nearestBlock instanceof OuterBlock) {
         nearestBlock.highlightChild(this)
       }
@@ -275,9 +293,10 @@ export class Block implements IBlockPosition {
     if (nearestBlock != null) {
       if (nearestBlock.canConnect(this)) {
         this.connect(nearestBlock)
-
         this.prev = nearestBlock
         nearestBlock.next = this
+        // this.recalculateWidth()
+        console.info(this)
       } else if (nearestBlock instanceof OuterBlock) {
         nearestBlock.innerConnect(this)
       }

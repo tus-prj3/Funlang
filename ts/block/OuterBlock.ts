@@ -72,8 +72,26 @@ export class OuterBlock extends Block {
             innerConnectBlock.element
           )
         })
+        this.recalculateHeight()
       }
     }
+  }
+
+  public recalculateHeight() {
+    console.info(this)
+    let placeHolderHeight = 0
+    let childrenBlocksAllHeight = 0
+    this.children.forEach((value, key) => {
+      let childrenBlocksHeight = 0
+      value.forEach((childBlock) => {
+        childrenBlocksHeight += childBlock.height
+      })
+      placeHolderHeight += key.height
+      childrenBlocksAllHeight += childrenBlocksHeight
+    })
+    const nextHeight = (this.initialHeight - placeHolderHeight) + Math.max(placeHolderHeight, childrenBlocksAllHeight)
+    this.element.style.height = nextHeight + 'px'
+    this.height = nextHeight
   }
 
   public removeHighlightChildren() {
