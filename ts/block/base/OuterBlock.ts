@@ -1,11 +1,10 @@
 // noinspection all
 import {Block} from "./internal";
-import {Vec2} from "../types/Vec2";
-import {getMinimumDistBlock} from "../store/BlockStore";
-import {IBlockPosition} from "../interface/IBlockPosition";
-import {blockStore} from "../index";
+import {Vec2} from "../../types/Vec2";
+import {getMinimumDistBlock} from "../../store/BlockStore";
+import {IBlockPosition} from "../../interface/IBlockPosition";
 
-export class OuterBlock extends Block {
+export abstract class OuterBlock extends Block {
   public readonly childrenPositions: Map<IBlockPosition, HTMLElement> = new Map<IBlockPosition, HTMLElement>()
   public children: Map<IBlockPosition, Array<Block>> = new Map<IBlockPosition, Array<Block>>()
   public dispatched: boolean = false

@@ -1,12 +1,14 @@
-import {Direction} from "../types/Direction";
-import {Vec2} from "../types/Vec2";
-import {getRandomColor} from "../types/Color";
-import {blockStore} from "../index";
-import {IBlockPosition} from "../interface/IBlockPosition";
+import {Direction} from "../../types/Direction";
+import {Vec2} from "../../types/Vec2";
+import {getRandomColor} from "../../types/Color";
+import {blockStore} from "../../index";
+import {IBlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "./internal";
-import {getMinimumDistBlock} from "../store/BlockStore";
+import {getMinimumDistBlock} from "../../store/BlockStore";
+import {INode} from "../../expression/INode";
+import {FLiteral} from "../../expression/FLiteral";
 
-export class Block implements IBlockPosition {
+export abstract class Block implements IBlockPosition {
   public x: number
   public y: number
   public width: number
@@ -306,4 +308,6 @@ export class Block implements IBlockPosition {
       block.element.style.border = 'none'
     })
   }
+
+  public abstract getExpression(): INode
 }

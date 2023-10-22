@@ -1,5 +1,5 @@
 // noinspection all
-import { Block } from "../block/internal";
+import { Block } from "../block/base/internal";
 import {IBlockPosition} from "../interface/IBlockPosition";
 
 export class BlockStore {
