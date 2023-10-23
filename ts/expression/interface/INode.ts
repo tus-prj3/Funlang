@@ -47,8 +47,8 @@ export interface IFunction extends INode {
 export interface IOperatorExpression extends IExpression {
   type: string // "OperatorExpression"
   operator: Operator
-  left: IIntLiteral
-  right: IIntLiteral
+  left: IExpression
+  right: IExpression
 }
 export enum Operator {
   "PLUS", "MINUS", "MULTIPLY", "DIVISION"

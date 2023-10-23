@@ -23,12 +23,20 @@ export class NumberBlock extends Block {
     this.inputElement.oninput = this.onChangeValue
     this.element.appendChild(this.inputElement)
 
-    // this.element.innerText = number.toString()
     this.element.style.background = '#5B67A5'
     this.element.style.textAlign = 'center'
     this.element.style.display = 'grid'
     this.element.style.placeItems = 'center'
     this.element.style.color = 'white'
+
+    const typeText = document.createElement('span')
+    typeText.innerText = "[num]"
+    typeText.style.fontSize = '10px'
+    typeText.style.fontWeight = 'bold'
+    typeText.style.position = 'absolute'
+    typeText.style.top = '0px'
+    typeText.style.left = '2px'
+    this.element.appendChild(typeText)
   }
 
   private onChangeValue = (event: Event) => {

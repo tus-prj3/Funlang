@@ -1,3 +1,4 @@
+// noinspection all
 import {NumberBlock} from "./block/base/internal";
 import {BlockStore} from "./store/BlockStore";
 import {BlockPosition} from "./interface/IBlockPosition";
@@ -5,6 +6,7 @@ import {SimpleOuterBlock} from "./block/SimpleOuterBlock";
 import {Interpreter} from "./engine/Interpreter";
 import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
+import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
 
 const generateButton = document.getElementById('generate')
 const logButton = document.getElementById('log')
@@ -47,6 +49,7 @@ mainButton!.onclick = (_) => {
       ]
     )*/
     new AssignOuterBlock(),
-    new VariableBlock("x")
+    new VariableBlock("x"),
+    new OperatorOuterBlock()
   )
 }

@@ -315,5 +315,9 @@ export abstract class Block implements IBlockPosition {
     return new BlockPosition(this.x - anotherBlock.x, this.y - anotherBlock.y, this.width, this.height)
   }
 
-  public abstract getExpression(): INode
+  public validate(): boolean {
+    return true
+  }
+
+  public abstract getExpression(): IStatement
 }

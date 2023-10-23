@@ -48,8 +48,6 @@ export class Interpreter {
       return this.assign(expression)
     } else if (expression instanceof FOperatorExpression) {
       return this.calc(expression)
-    } else if (expression instanceof FVariable) {
-      return this.variable(expression)
     } else if (expression instanceof FIntLiteral) {
       return this.value(expression)
     }
@@ -67,21 +65,23 @@ export class Interpreter {
   }
 
   public value(intLiteral: IIntLiteral): number {
+    console.info(intLiteral)
     return intLiteral.value
   }
 
   public calc(operatorExpression: IOperatorExpression): number {
-    const left = operatorExpression.left
-    const right = operatorExpression.right
+    console.info(operatorExpression)
+    const left = this.expression(operatorExpression.left)
+    const right = this.expression(operatorExpression.right)
     switch (operatorExpression.operator) {
       case Operator.PLUS:
-        return this.value(left) + this.value(right)
+        return left + right
       case Operator.MINUS:
-        return this.value(left) - this.value(right)
+        return left - right
       case Operator.MULTIPLY:
-        return this.value(left) * this.value(right)
+        return left * right
       case Operator.DIVISION:
-        return this.value(left) / this.value(right)
+        return left / right
     }
   }
 }

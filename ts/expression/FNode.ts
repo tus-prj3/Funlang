@@ -87,12 +87,12 @@ export class FFunctionBody implements IFunctionBody {
 }
 
 export class FOperatorExpression implements IOperatorExpression {
-  left: IIntLiteral
+  left: IExpression
   operator: Operator
-  right: IIntLiteral
+  right: IExpression
   type: string = "OperatorExpression"
 
-  constructor(operator: Operator, left: IIntLiteral, right: IIntLiteral) {
+  constructor(operator: Operator, left: IExpression, right: IExpression) {
     this.operator = operator
     this.left = left
     this.right = right

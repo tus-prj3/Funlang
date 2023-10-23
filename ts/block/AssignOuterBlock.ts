@@ -13,6 +13,30 @@ export class AssignOuterBlock extends OuterBlock {
       new BlockPosition(25, 25, 100, 50),
       new BlockPosition(25, 100, 100, 50)
     ]);
+
+    const letText = document.createElement('span')
+    letText.innerText = "let"
+    letText.style.fontSize = '12px'
+    letText.style.fontWeight = 'bold'
+    letText.style.position = 'absolute'
+    letText.style.top = '5px'
+    letText.style.left = '5px'
+
+    const equalText = document.createElement('span')
+    equalText.innerText = "="
+    equalText.style.fontSize = '12px'
+    equalText.style.fontWeight = 'bold'
+    equalText.style.position = 'absolute'
+    equalText.style.top = '80px'
+    equalText.style.left = '5px'
+
+    this.element.appendChild(letText)
+    this.element.appendChild(equalText)
+  }
+
+  public override validate(): boolean {
+    const children = Array.from(this.children.values())
+    return (children[0][0] instanceof VariableBlock) && (children[1][0] instanceof NumberBlock)
   }
 
   public override getExpression(): IStatement {
