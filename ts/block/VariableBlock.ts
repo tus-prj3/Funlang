@@ -1,24 +1,24 @@
 import {Block} from "./base/Block";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
-import {IExpression, INode, IStatement} from "../expression/interface/INode";
-import {FExpressionStatement, FIntLiteral} from "../expression/FNode";
+import {INode, IStatement, IVariable} from "../expression/interface/INode";
+import {FExpressionStatement, FIntLiteral, FVariable} from "../expression/FNode";
 
-export class NumberBlock extends Block {
-  private number: number
+export class VariableBlock extends Block {
+  private id: string
   private readonly inputElement: HTMLInputElement
 
-  constructor(number: number) {
+  constructor(id: string) {
     super(
       new Vec2(100, 100),100, 50,
-      `number_${blockStore.blocks.length}`
+      `variable_${blockStore.blocks.length}`
     );
-    this.number = number
+    this.id = id
 
     this.inputElement = document.createElement('input')
     this.inputElement.style.width = 50 + 'px'
     this.inputElement.style.borderRadius = '5px'
-    this.inputElement.value = number.toString()
+    this.inputElement.value = id
     this.inputElement.style.textAlign = 'center'
     this.inputElement.oninput = this.onChangeValue
     this.element.appendChild(this.inputElement)
@@ -36,15 +36,10 @@ export class NumberBlock extends Block {
     if (!(target instanceof HTMLInputElement)) {
       return
     }
-    const stringNumber = target.value
-    if (isNaN(Number(stringNumber))) {
-      this.inputElement.value = this.number.toString()
-      return
-    }
-    this.number = Number(stringNumber)
+    this.id = target.value
   }
 
-  public override getExpression(): IExpression {
-    return new FIntLiteral(this.number)
+  public override getExpression(): IVariable {
+    return new FVariable(this.id)
   }
 }

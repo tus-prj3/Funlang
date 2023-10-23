@@ -1,12 +1,28 @@
 // noinspection all
 import { Block } from "../block/base/internal";
 import {IBlockPosition} from "../interface/IBlockPosition";
+import {IStatement} from "../expression/interface/INode";
+import {FProgram} from "../expression/FNode";
 
 export class BlockStore {
   blocks: Block[] = []
 
   public getMinimumDistanceBlock(block: Block): Block | null {
     return getMinimumDistBlock(this.blocks, block)
+  }
+
+  public getAst() {
+    const roots = this.blocks.filter((block) => !block.hasPrev && !block.hasParent)
+
+    let body: IStatement[] = []
+    roots.forEach((block) => {
+      let nowBlock: Block | null = block
+      while (nowBlock != null) {
+        body.push(nowBlock.getExpression())
+        nowBlock = nowBlock.getNext
+      }
+    })
+    return new FProgram(body)
   }
 }
 
@@ -27,4 +43,3 @@ export function getMinimumDistBlock<T extends IBlockPosition>(blocks: T[], targe
     return resultBlock
   }
 }
-

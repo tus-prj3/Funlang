@@ -14,8 +14,8 @@ export abstract class OuterBlock extends Block {
 
     childrenPositions.forEach((childrenPosition) => {
       const element = document.createElement('div')
-      element.style.top = childrenPosition.x + 'px'
-      element.style.left = childrenPosition.y + 'px'
+      element.style.left = childrenPosition.x + 'px'
+      element.style.top = childrenPosition.y + 'px'
       element.style.width = childrenPosition.width + 'px'
       element.style.height = childrenPosition.height + 'px'
       element.classList.add('block_child_notify')
@@ -30,7 +30,7 @@ export abstract class OuterBlock extends Block {
   }
 
   public highlightChild(tryingToSetChildBlock: Block) {
-    const nearestChild = getMinimumDistBlock(Array.from(this.childrenPositions.keys()), tryingToSetChildBlock)
+    const nearestChild = getMinimumDistBlock(Array.from(this.childrenPositions.keys()), tryingToSetChildBlock.relativePosition(this))
     if (nearestChild != null) {
       const nearestChildCenter = new Vec2(nearestChild.x + this.x + nearestChild.width / 2, nearestChild.y + this.y + nearestChild.height / 2)
       if (nearestChildCenter.distance(tryingToSetChildBlock.center()) <= 75) {
@@ -41,7 +41,7 @@ export abstract class OuterBlock extends Block {
   }
 
   public innerConnect(tryingToSetChildBlock: Block) {
-    const nearestChild = getMinimumDistBlock(Array.from(this.childrenPositions.keys()), tryingToSetChildBlock)
+    const nearestChild = getMinimumDistBlock(Array.from(this.childrenPositions.keys()), tryingToSetChildBlock.relativePosition(this))
     if (nearestChild != null) {
       const nearestChildCenter = new Vec2(nearestChild.x + this.x + nearestChild.width / 2, nearestChild.y + this.y + nearestChild.height / 2)
       if (nearestChildCenter.distance(tryingToSetChildBlock.center()) <= 75) {
@@ -66,6 +66,8 @@ export abstract class OuterBlock extends Block {
         innerConnectBlocks.forEach((innerConnectBlock) => {
           innerConnectBlock.parent = this
           innerConnectBlock.parentBlockPosition = nearestChild
+
+          console.info(innerConnectBlock.parentBlockPosition)
 
           this.element.appendChild(
             innerConnectBlock.element

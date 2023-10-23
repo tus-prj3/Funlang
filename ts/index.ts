@@ -1,12 +1,15 @@
-import {Block, OuterBlock, NumberBlock} from "./block/base/internal";
+import {NumberBlock} from "./block/base/internal";
 import {BlockStore} from "./store/BlockStore";
-import {Vec2} from "./types/Vec2";
 import {BlockPosition} from "./interface/IBlockPosition";
-import {FLiteral} from "./expression/FLiteral";
+import {SimpleOuterBlock} from "./block/SimpleOuterBlock";
+import {Interpreter} from "./engine/Interpreter";
+import {AssignOuterBlock} from "./block/AssignOuterBlock";
+import {VariableBlock} from "./block/VariableBlock";
 
 const generateButton = document.getElementById('generate')
 const logButton = document.getElementById('log')
 const outerButton = document.getElementById('outer')
+const mainButton = document.getElementById('main')
 
 export const blockStore = new BlockStore()
 
@@ -18,17 +21,32 @@ generateButton!.onclick = (_) => {
 }
 
 logButton!.onclick = (_) => {
+  const interpreter = new Interpreter(blockStore.getAst())
+  interpreter.run()
   console.info(blockStore.blocks)
+  console.info(interpreter.variables)
 }
 
 outerButton!.onclick = (_) => {
-  /*blockStore.blocks.push(
-    new OuterBlock(
-      new Vec2(200, 200), 125, 100, `outer_${blockStore.blocks.length}`,
+  blockStore.blocks.push(
+    new SimpleOuterBlock(
+      `outer_${blockStore.blocks.length}`,
       [
         new BlockPosition(25, 25, 100, 50)
-      ],
-      new FLiteral(10)
+      ]
     )
-  )*/
+  )
+}
+
+mainButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    /*new MainOuterBlock(
+      `main_${blockStore.blocks.length}`,
+      [
+        new BlockPosition(25, 25, 100, 50)
+      ]
+    )*/
+    new AssignOuterBlock(),
+    new VariableBlock("x")
+  )
 }

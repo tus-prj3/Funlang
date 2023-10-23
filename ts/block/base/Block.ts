@@ -2,11 +2,10 @@ import {Direction} from "../../types/Direction";
 import {Vec2} from "../../types/Vec2";
 import {getRandomColor} from "../../types/Color";
 import {blockStore} from "../../index";
-import {IBlockPosition} from "../../interface/IBlockPosition";
+import {BlockPosition, IBlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "./internal";
 import {getMinimumDistBlock} from "../../store/BlockStore";
-import {INode} from "../../expression/INode";
-import {FLiteral} from "../../expression/FLiteral";
+import {INode, IStatement} from "../../expression/interface/INode";
 
 export abstract class Block implements IBlockPosition {
   public x: number
@@ -97,6 +96,10 @@ export abstract class Block implements IBlockPosition {
 
   public get hasPrev() {
     return this.prev != null
+  }
+
+  public get hasParent() {
+    return this.parent != null
   }
 
   public get getNext() {
@@ -215,12 +218,12 @@ export abstract class Block implements IBlockPosition {
       // this.recalculateWidth()
     }
     if (this.parent != null) {
-      console.info(this)
       this.parent.dispatched = true
       this.parent.childrenPositions.get(this.parentBlockPosition!)!.style.visibility = 'visible'
 
       const connectedBlocks = this.connectedNextBlocks()
       const childrenBlocks = this.parent.children.get(this.parentBlockPosition!)!
+      console.info(this.parentBlockPosition)
       this.parent.children.set(this.parentBlockPosition!, childrenBlocks.filter((block) => !connectedBlocks.includes(block)))
 
       this.parent.recalculateHeight()
@@ -298,7 +301,6 @@ export abstract class Block implements IBlockPosition {
         this.prev = nearestBlock
         nearestBlock.next = this
         // this.recalculateWidth()
-        console.info(this)
       } else if (nearestBlock instanceof OuterBlock) {
         nearestBlock.innerConnect(this)
       }
@@ -307,6 +309,10 @@ export abstract class Block implements IBlockPosition {
     blockStore.blocks.forEach((block) => {
       block.element.style.border = 'none'
     })
+  }
+
+  public relativePosition(anotherBlock: Block): IBlockPosition {
+    return new BlockPosition(this.x - anotherBlock.x, this.y - anotherBlock.y, this.width, this.height)
   }
 
   public abstract getExpression(): INode
