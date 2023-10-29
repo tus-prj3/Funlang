@@ -55,4 +55,8 @@ export class NumberBlock extends Block {
   public override getExpression(): IExpression {
     return new FIntLiteral(this.number)
   }
+
+  public validate(): boolean {
+    return true
+  }
 }

@@ -7,6 +7,7 @@ import {Interpreter} from "./engine/Interpreter";
 import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
 import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
+import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import { ComparisonOuterBrock } from "./block/ComparisonOuterBrock";
 
 const generateButton = document.getElementById('generate')
@@ -25,9 +26,14 @@ generateButton!.onclick = (_) => {
 }
 
 logButton!.onclick = (_) => {
+  /*if (!blockStore.validate()) {
+    // TODO: ログへの出力をやめて toast などに変更する
+    console.error("構造に誤りがあります.")
+    return
+  }*/
+  console.info(blockStore.getAst())
   const interpreter = new Interpreter(blockStore.getAst())
   interpreter.run()
-  console.info(blockStore.blocks)
   console.info(interpreter.variables)
 }
 

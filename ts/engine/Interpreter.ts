@@ -16,12 +16,13 @@ import {
   FExpressionStatement,
   FIntLiteral,
   FOperatorExpression,
+  FPrintFunction,
   FComparisonExpression,
   FVariable
 } from "../expression/FNode";
 
 export class Interpreter {
-  public variables: Map<String, number> = new Map<String, number>()
+  public variables: Map<string, number> = new Map<string, number>()
   public program: IProgram
 
   constructor(program: IProgram) {
@@ -55,6 +56,8 @@ export class Interpreter {
       return this.calc(expression)
     } else if (expression instanceof FIntLiteral) {
       return this.value(expression)
+    } else if (expression instanceof FPrintFunction) {
+      return expression.invoke(this.expression(expression.arg))
     } else if (expression instanceof FComparisonExpression) {
       const tmp: boolean = this.compare(expression)
       console.log(tmp)
@@ -74,12 +77,10 @@ export class Interpreter {
   }
 
   public value(intLiteral: IIntLiteral): number {
-    console.info(intLiteral)
     return intLiteral.value
   }
 
   public calc(operatorExpression: IOperatorExpression): number {
-    console.info(operatorExpression)
     const left = this.expression(operatorExpression.left)
     const right = this.expression(operatorExpression.right)
     switch (operatorExpression.operator) {

@@ -126,3 +126,16 @@ export class FAssignOperatorExpression implements IAssignOperatorExpression {
     this.right = right
   }
 }
+
+export class FPrintFunction implements INode {
+  type: string = "Print"
+  arg: IExpression
+
+  constructor(arg: IExpression) {
+    this.arg = arg
+  }
+
+  public invoke(printable: any) {
+    console.info(printable)
+  }
+}

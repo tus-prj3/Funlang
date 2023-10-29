@@ -24,6 +24,13 @@ export class BlockStore {
     })
     return new FProgram(body)
   }
+
+  public validate() {
+    return this.blocks.map((block) => {
+      console.info(`Block named ${block.identifier}: ${block.validate()}`)
+      return block.validate()
+    }).filter((bool) => !bool).length == 0
+  }
 }
 
 export function getMinimumDistBlock<T extends IBlockPosition>(blocks: T[], target: T): T | null {

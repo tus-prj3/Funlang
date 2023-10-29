@@ -22,4 +22,8 @@ export class MainOuterBlock extends SimpleOuterBlock {
       new FFunctionBody(this.getChildrenExpression())
     )
   }
+
+  validate(): boolean {
+    return true;
+  }
 }

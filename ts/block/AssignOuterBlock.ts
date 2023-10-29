@@ -3,9 +3,11 @@ import {BlockPosition} from "../interface/IBlockPosition";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {AssignOperator, IStatement} from "../expression/interface/INode";
-import {FAssignOperatorExpression, FExpressionStatement} from "../expression/FNode";
+import {FAssignOperatorExpression, FExpressionStatement, FIntLiteral, FOperatorExpression} from "../expression/FNode";
 import {VariableBlock} from "./VariableBlock";
 import {NumberBlock} from "./NumberBlock";
+import {Block} from "./base/Block";
+import {OperatorOuterBlock} from "./OperatorOuterBlock";
 
 export class AssignOuterBlock extends OuterBlock {
   constructor() {
@@ -36,7 +38,10 @@ export class AssignOuterBlock extends OuterBlock {
 
   public override validate(): boolean {
     const children = Array.from(this.children.values())
-    return (children[0][0] instanceof VariableBlock) && (children[1][0] instanceof NumberBlock)
+    if (children.length != 2) {
+      return false
+    }
+    return (children[0][0] instanceof VariableBlock) && (children[1][0] instanceof OperatorOuterBlock || children[1][0] instanceof NumberBlock)
   }
 
   public override getExpression(): IStatement {
@@ -45,7 +50,7 @@ export class AssignOuterBlock extends OuterBlock {
       new FAssignOperatorExpression(
         // TODO: children にセットできるブロックのフィルタ機能が必要
         AssignOperator.ASSIGN, (children[0][0] as VariableBlock).getExpression(),
-        (children[1][0] as NumberBlock).getExpression()
+        children[1][0].getExpression()
       )
     )
   }
