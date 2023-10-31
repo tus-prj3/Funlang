@@ -2,7 +2,7 @@
 import {Block} from "./internal";
 import {Vec2} from "../../types/Vec2";
 import {getMinimumDistBlock} from "../../store/BlockStore";
-import {IBlockPosition} from "../../interface/IBlockPosition";
+import {BlockPosition, IBlockPosition} from "../../interface/IBlockPosition";
 
 export abstract class OuterBlock extends Block {
   public readonly childrenPositions: Map<IBlockPosition, HTMLElement> = new Map<IBlockPosition, HTMLElement>()
@@ -51,6 +51,7 @@ export abstract class OuterBlock extends Block {
 
         const innerConnectBlocks = [tryingToSetChildBlock]
 
+
         for (let target of connectTo.connectedNextBlocks().filter((block) => block !== connectTo)) {
           // TODO: 設計を見直す
           target.setRelativePosition(new Vec2(nearestChild.x, height))
@@ -60,6 +61,34 @@ export abstract class OuterBlock extends Block {
         }
         this.children.set(nearestChild, innerConnectBlocks)
 
+        // 接続場所を特定するためのフラグ
+        let flag: boolean = false
+        const dh = connectTo.height - nearestChild.height
+        const blockPositions = Array.from(this.childrenPositions.keys())
+        for (let i = 0; i < this.childrenPositions.size; i++) {
+          // 接続場所以降の接続できる場所をずらす
+          if (flag) {
+            const prevBlockPosition = blockPositions[i]
+            const prevHTMLElement = this.childrenPositions.get(prevBlockPosition)!
+            prevHTMLElement.style.top = parseInt(prevHTMLElement.style.top.split('px')[0]) + dh + 'px'
+            const prevChildren = this.children.get(prevBlockPosition)!
+            const newBlockPosition = new BlockPosition(
+              prevBlockPosition.x, prevBlockPosition.y + dh, prevBlockPosition.width, prevBlockPosition.height
+            )
+
+            this.childrenPositions.delete(prevBlockPosition)
+            this.childrenPositions.set(newBlockPosition, prevHTMLElement)
+
+            if (this.children.has(prevBlockPosition)) {
+              this.children.delete(prevBlockPosition)
+              this.children.set(newBlockPosition, prevChildren)
+            }
+          }
+          if (blockPositions[i] === nearestChild) {
+            flag = true
+          }
+        }
+
         this.childrenPositions.get(nearestChild)!.style.border = ''
         this.childrenPositions.get(nearestChild)!.style.visibility = 'hidden'
 
@@ -67,19 +96,19 @@ export abstract class OuterBlock extends Block {
           innerConnectBlock.parent = this
           innerConnectBlock.parentBlockPosition = nearestChild
 
-          console.info(innerConnectBlock.parentBlockPosition)
-
           this.element.appendChild(
             innerConnectBlock.element
           )
         })
         this.recalculateHeight()
+
+        console.info(this.childrenPositions)
+        console.info(this.children)
       }
     }
   }
 
   public recalculateHeight() {
-    console.info(this)
     let placeHolderHeight = 0
     let childrenBlocksAllHeight = 0
     this.children.forEach((value, key) => {
@@ -88,9 +117,9 @@ export abstract class OuterBlock extends Block {
         childrenBlocksHeight += childBlock.height
       })
       placeHolderHeight += key.height
-      childrenBlocksAllHeight += childrenBlocksHeight
+      childrenBlocksAllHeight += Math.max(key.height, childrenBlocksHeight)
     })
-    const nextHeight = (this.initialHeight - placeHolderHeight) + Math.max(placeHolderHeight, childrenBlocksAllHeight)
+    const nextHeight = (this.initialHeight - placeHolderHeight) + childrenBlocksAllHeight
     this.element.style.height = nextHeight + 'px'
     this.height = nextHeight
   }

@@ -226,6 +226,38 @@ export abstract class Block implements IBlockPosition {
       console.info(this.parentBlockPosition)
       this.parent.children.set(this.parentBlockPosition!, childrenBlocks.filter((block) => !connectedBlocks.includes(block)))
 
+      // 接続場所を特定するためのフラグ
+      let flag: boolean = false
+      const prevConnectedOuterBlock = this.parent
+      const prevConnectedPosition = this.parentBlockPosition!
+      // 縮める長さ
+      const dh = this.height - prevConnectedPosition.height
+        console.info(dh)
+      const blockPositions = Array.from(prevConnectedOuterBlock.childrenPositions.keys())
+      for (let i = 0; i < prevConnectedOuterBlock.childrenPositions.size; i++) {
+        // 接続場所以降の接続できる場所をずらす
+        if (flag) {
+          const prevBlockPosition = blockPositions[i]
+          const prevHTMLElement = prevConnectedOuterBlock.childrenPositions.get(prevBlockPosition)!
+          prevHTMLElement.style.top = parseInt(prevHTMLElement.style.top.split('px')[0]) - dh + 'px'
+          const prevChildren = prevConnectedOuterBlock.children.get(prevBlockPosition)!
+          const newBlockPosition = new BlockPosition(
+            prevBlockPosition.x, prevBlockPosition.y - dh, prevBlockPosition.width, prevBlockPosition.height
+          )
+
+          prevConnectedOuterBlock.childrenPositions.delete(prevBlockPosition)
+          prevConnectedOuterBlock.childrenPositions.set(newBlockPosition, prevHTMLElement)
+
+          if (prevConnectedOuterBlock.children.has(prevBlockPosition)) {
+            prevConnectedOuterBlock.children.delete(prevBlockPosition)
+            prevConnectedOuterBlock.children.set(newBlockPosition, prevChildren)
+          }
+        }
+        if (blockPositions[i] === prevConnectedPosition) {
+          flag = true
+        }
+      }
+
       this.parent.recalculateHeight()
 
       connectedBlocks.forEach((block) => {
