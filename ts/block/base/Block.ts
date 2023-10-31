@@ -223,7 +223,6 @@ export abstract class Block implements IBlockPosition {
 
       const connectedBlocks = this.connectedNextBlocks()
       const childrenBlocks = this.parent.children.get(this.parentBlockPosition!)!
-      console.info(this.parentBlockPosition)
       this.parent.children.set(this.parentBlockPosition!, childrenBlocks.filter((block) => !connectedBlocks.includes(block)))
 
       // 接続場所を特定するためのフラグ
@@ -232,7 +231,6 @@ export abstract class Block implements IBlockPosition {
       const prevConnectedPosition = this.parentBlockPosition!
       // 縮める長さ
       const dh = this.height - prevConnectedPosition.height
-        console.info(dh)
       const blockPositions = Array.from(prevConnectedOuterBlock.childrenPositions.keys())
       for (let i = 0; i < prevConnectedOuterBlock.childrenPositions.size; i++) {
         // 接続場所以降の接続できる場所をずらす

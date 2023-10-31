@@ -101,9 +101,6 @@ export abstract class OuterBlock extends Block {
           )
         })
         this.recalculateHeight()
-
-        console.info(this.childrenPositions)
-        console.info(this.children)
       }
     }
   }

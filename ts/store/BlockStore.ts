@@ -27,7 +27,7 @@ export class BlockStore {
 
   public validate() {
     return this.blocks.map((block) => {
-      console.info(`Block named ${block.identifier}: ${block.validate()}`)
+      // console.info(`Block named ${block.identifier}: ${block.validate()}`)
       return block.validate()
     }).filter((bool) => !bool).length == 0
   }

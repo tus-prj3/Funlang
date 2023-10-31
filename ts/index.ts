@@ -31,10 +31,8 @@ logButton!.onclick = (_) => {
     console.error("構造に誤りがあります.")
     return
   }*/
-  console.info(blockStore.getAst())
   const interpreter = new Interpreter(blockStore.getAst())
   interpreter.run()
-  console.info(interpreter.variables)
 }
 
 outerButton!.onclick = (_) => {
