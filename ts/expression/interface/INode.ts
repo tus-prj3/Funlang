@@ -54,6 +54,16 @@ export enum Operator {
   "PLUS", "MINUS", "MULTIPLY", "DIVISION"
 }
 
+export interface IComparisonExpression extends IExpression {
+  type: string
+  comparison: ComparisonOperator
+  left: IExpression
+  right: IExpression
+}
+export enum ComparisonOperator {
+  "EQ", "NE", "LT", "GT", "LE", "GE"
+}
+
 export interface IAssignOperatorExpression extends IExpression {
   type: string // "AssignOperatorExpression"
   operator: AssignOperator

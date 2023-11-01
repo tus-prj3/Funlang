@@ -1,7 +1,9 @@
 import {
   AssignOperator,
+  ComparisonOperator,
   IAssignOperatorExpression,
   IBlockStatement,
+  IComparisonExpression,
   IExpression,
   IExpressionStatement, IFunction, IFunctionBody,
   IIdentifier, IIntLiteral,
@@ -94,6 +96,19 @@ export class FOperatorExpression implements IOperatorExpression {
 
   constructor(operator: Operator, left: IExpression, right: IExpression) {
     this.operator = operator
+    this.left = left
+    this.right = right
+  }
+}
+
+export class FComparisonExpression implements IComparisonExpression {
+  left: IExpression
+  comparison: ComparisonOperator
+  right: IExpression
+  type: string = "ComparisonExpression"
+
+  constructor(comparsion: ComparisonOperator, left: IExpression, right: IExpression) {
+    this.comparison = comparsion
     this.left = left
     this.right = right
   }
