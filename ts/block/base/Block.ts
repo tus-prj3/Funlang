@@ -5,14 +5,14 @@ import {blockStore} from "../../index";
 import {BlockPosition, IBlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "./internal";
 import {getMinimumDistBlock} from "../../store/BlockStore";
-import {INode, IStatement} from "../../expression/interface/INode";
+import {IStatement} from "../../expression/interface/INode";
 
 export abstract class Block implements IBlockPosition {
   public x: number
   public y: number
   public width: number
   public height: number
-  public readonly initialHeight: number
+  public initialHeight: number
   public readonly initialWidth: number
   public readonly identifier: string
 

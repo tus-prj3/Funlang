@@ -8,7 +8,8 @@ import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
 import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
-import { ComparisonOuterBrock } from "./block/ComparisonOuterBrock";
+import {ComparisonOuterBrock} from "./block/ComparisonOuterBrock";
+import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
 
 const generateButton = document.getElementById('generate')
 const logButton = document.getElementById('log')
@@ -31,18 +32,15 @@ logButton!.onclick = (_) => {
     console.error("構造に誤りがあります.")
     return
   }*/
+  console.info(blockStore.getAst())
+
   const interpreter = new Interpreter(blockStore.getAst())
   interpreter.run()
 }
 
 outerButton!.onclick = (_) => {
   blockStore.blocks.push(
-    new SimpleOuterBlock(
-      `outer_${blockStore.blocks.length}`,
-      [
-        new BlockPosition(25, 25, 100, 50)
-      ]
-    )
+    new FunctionOuterBlock()
   )
 }
 
