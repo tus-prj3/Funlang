@@ -7,11 +7,13 @@ import {Interpreter} from "./engine/Interpreter";
 import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
 import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
+import { ComparisonOuterBrock } from "./block/ComparisonOuterBrock";
 
 const generateButton = document.getElementById('generate')
 const logButton = document.getElementById('log')
 const outerButton = document.getElementById('outer')
 const mainButton = document.getElementById('main')
+const comparisonButton = document.getElementById('comparison')
 
 export const blockStore = new BlockStore()
 
@@ -51,5 +53,11 @@ mainButton!.onclick = (_) => {
     new AssignOuterBlock(),
     new VariableBlock("x"),
     new OperatorOuterBlock()
+  )
+}
+
+comparisonButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new ComparisonOuterBrock()
   )
 }

@@ -3,10 +3,12 @@ import {
   IExpression,
   IIntLiteral,
   IOperatorExpression,
+  IComparisonExpression,
   IProgram,
   IStatement,
   IVariable,
-  Operator
+  Operator,
+  ComparisonOperator
 } from "../expression/interface/INode";
 import {
   FAssignOperatorExpression,
@@ -14,6 +16,7 @@ import {
   FExpressionStatement,
   FIntLiteral,
   FOperatorExpression,
+  FComparisonExpression,
   FVariable
 } from "../expression/FNode";
 
@@ -40,6 +43,8 @@ export class Interpreter {
       this.expression(statement.expression)
     } else if (statement instanceof FBlockStatement) {
       statement.body.forEach((st) => this.statement(st))
+    } else if (statement instanceof FComparisonExpression) {
+      this.expression(statement)
     }
   }
 
@@ -50,6 +55,10 @@ export class Interpreter {
       return this.calc(expression)
     } else if (expression instanceof FIntLiteral) {
       return this.value(expression)
+    } else if (expression instanceof FComparisonExpression) {
+      const tmp: boolean = this.compare(expression)
+      console.log(tmp)
+      return tmp
     }
   }
 
@@ -82,6 +91,26 @@ export class Interpreter {
         return left * right
       case Operator.DIVISION:
         return left / right
+    }
+  }
+
+  public compare(comparisonExpression: IComparisonExpression): boolean {
+    console.info(comparisonExpression)
+    const left = this.expression(comparisonExpression.left)
+    const right = this.expression(comparisonExpression.right)
+    switch (comparisonExpression.comparison) {
+      case ComparisonOperator.EQ:
+        return left == right
+      case ComparisonOperator.NE:
+        return left != right
+      case ComparisonOperator.LT:
+        return left < right
+      case ComparisonOperator.GT:
+        return left > right
+      case ComparisonOperator.LE:
+        return left <= right
+      case ComparisonOperator.GE:
+        return left >= right
     }
   }
 }
