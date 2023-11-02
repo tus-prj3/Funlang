@@ -56,6 +56,8 @@ export class Interpreter {
       return this.calc(expression)
     } else if (expression instanceof FIntLiteral) {
       return this.value(expression)
+    } else if (expression instanceof FVariable) {
+      return this.variable(expression)
     } else if (expression instanceof FPrintFunction) {
       return expression.invoke(this.expression(expression.arg))
     } else if (expression instanceof FComparisonExpression) {
@@ -72,8 +74,14 @@ export class Interpreter {
     return variableName
   }
 
-  public variable(variable: IVariable): string {
-    return variable.id
+  public variable(variable: IVariable): any {
+    const name = variable.id
+    if (this.variables.has(name)) {
+      return this.variables.get(name)!
+    } else {
+      this.variables.set(name, 0)
+      return name
+    }
   }
 
   public value(intLiteral: IIntLiteral): number {

@@ -5,6 +5,7 @@ import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
 import {FOperatorExpression} from "../expression/FNode";
 import {NumberBlock} from "./NumberBlock";
+import {OPERATOR} from "../types/Color";
 
 export class OperatorOuterBlock extends OuterBlock {
   op: HTMLSelectElement
@@ -45,6 +46,8 @@ export class OperatorOuterBlock extends OuterBlock {
 
     this.element.appendChild(letText)
     this.element.appendChild(this.op)
+
+    this.element.style.background = OPERATOR
   }
 
   validate(): boolean {

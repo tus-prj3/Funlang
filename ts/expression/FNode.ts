@@ -5,7 +5,7 @@ import {
   IBlockStatement,
   IComparisonExpression,
   IExpression,
-  IExpressionStatement, IFunction, IFunctionBody,
+  IExpressionStatement, IFunction,
   IIdentifier, IIntLiteral,
   INode, IOperatorExpression,
   IProgram,
@@ -70,20 +70,11 @@ export class FFunction implements IFunction {
   id: string
   params: IIdentifier[] | null
   type = "Function"
-  body: IFunctionBody
+  body: IStatement[]
 
-  constructor(id: string, params: IIdentifier[] | null, body: IFunctionBody) {
+  constructor(id: string, params: IIdentifier[] | null, body: IStatement[]) {
     this.id = id
     this.params = params
-    this.body = body
-  }
-}
-
-export class FFunctionBody implements IFunctionBody {
-  body: IStatement[];
-  type: string = "FunctionBody"
-
-  constructor(body: IStatement[]) {
     this.body = body
   }
 }

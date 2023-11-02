@@ -7,6 +7,7 @@ import {BlockPosition} from "../../interface/IBlockPosition";
 import {VariableBlock} from "../VariableBlock";
 import {NumberBlock} from "../NumberBlock";
 import {OperatorOuterBlock} from "../OperatorOuterBlock";
+import {FUNCTION} from "../../types/Color";
 
 export class PrintFunctionOuterBlock extends OuterBlock {
   constructor() {
@@ -30,6 +31,8 @@ export class PrintFunctionOuterBlock extends OuterBlock {
     printText.style.left = '5px'
 
     this.element.appendChild(printText)
+
+    this.element.style.background = FUNCTION
   }
 
   validate(): boolean {

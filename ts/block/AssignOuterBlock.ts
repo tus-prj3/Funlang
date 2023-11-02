@@ -8,6 +8,7 @@ import {VariableBlock} from "./VariableBlock";
 import {NumberBlock} from "./NumberBlock";
 import {Block} from "./base/Block";
 import {OperatorOuterBlock} from "./OperatorOuterBlock";
+import {LET} from "../types/Color";
 
 export class AssignOuterBlock extends OuterBlock {
   constructor() {
@@ -17,10 +18,11 @@ export class AssignOuterBlock extends OuterBlock {
     ]);
 
     const letText = document.createElement('span')
-    letText.innerText = "let"
+    letText.innerText = "[let]"
     letText.style.fontSize = '12px'
     letText.style.fontWeight = 'bold'
     letText.style.position = 'absolute'
+    letText.style.color = 'white'
     letText.style.top = '5px'
     letText.style.left = '5px'
 
@@ -29,11 +31,14 @@ export class AssignOuterBlock extends OuterBlock {
     equalText.style.fontSize = '12px'
     equalText.style.fontWeight = 'bold'
     equalText.style.position = 'absolute'
+    equalText.style.color = 'white'
     equalText.style.top = '80px'
     equalText.style.left = '5px'
 
     this.element.appendChild(letText)
     this.element.appendChild(equalText)
+
+    this.element.style.background = LET
   }
 
   public override validate(): boolean {

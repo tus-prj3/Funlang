@@ -36,12 +36,10 @@ export interface IBlockStatement extends IStatement {
   body: IStatement[]
 }
 
-export interface IFunctionBody extends IBlockStatement {}
-
 export interface IFunction extends INode {
   id: string
   params: IIdentifier[] | null
-  body: IFunctionBody
+  body: IStatement[]
 }
 
 export interface IOperatorExpression extends IExpression {

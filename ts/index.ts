@@ -9,7 +9,7 @@ import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock"
 import {ComparisonOuterBrock} from "./block/ComparisonOuterBrock";
 import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
 
-const generateButton = document.getElementById('generate')
+const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
 const operatorButton = document.getElementById('operator')
 const mainButton = document.getElementById('main')
@@ -17,10 +17,11 @@ const comparisonButton = document.getElementById('comparison')
 const functionButton = document.getElementById('function')
 const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
+const defineButton = document.getElementById('define')
 
 export const blockStore = new BlockStore()
 
-generateButton!.onclick = (_) => {
+numberButton!.onclick = (_) => {
   blockStore.blocks.push(
     new NumberBlock(10)
   )
@@ -82,5 +83,11 @@ variableButton!.onclick = (_) => {
 printButton!.onclick = (_) => {
   blockStore.blocks.push(
     new PrintFunctionOuterBlock()
+  )
+}
+
+defineButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new AssignOuterBlock()
   )
 }
