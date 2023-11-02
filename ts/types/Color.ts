@@ -6,3 +6,7 @@ export function getRandomColor() {
   }
   return "#" + color
 }
+
+export const FUNCTION = '#995ba5'
+export const LET = '#A58551'
+export const OPERATOR = '#51791A'

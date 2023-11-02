@@ -5,6 +5,7 @@ import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
 import {FComparisonExpression, FExpressionStatement, FIntLiteral, FOperatorExpression, FProgram} from "../expression/FNode";
 import {NumberBlock} from "./NumberBlock";
+import {OPERATOR} from "../types/Color";
 
 export class ComparisonOuterBrock extends OuterBlock {
     op: HTMLSelectElement
@@ -51,6 +52,8 @@ export class ComparisonOuterBrock extends OuterBlock {
 
         this.element.appendChild(letText)
         this.element.appendChild(this.op)
+
+        this.element.style.background = OPERATOR
     }
 
     validate(): boolean{

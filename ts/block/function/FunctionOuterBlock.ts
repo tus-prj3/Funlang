@@ -1,0 +1,98 @@
+import {Vec2} from "../../types/Vec2";
+import {blockStore} from "../../index";
+import {BlockPosition} from "../../interface/IBlockPosition";
+import {OuterBlock} from "../base/OuterBlock";
+import {IStatement} from "../../expression/interface/INode";
+import {FDynamicFunction, FIntLiteral} from "../../expression/FNode";
+import {FUNCTION} from "../../types/Color";
+import {VariableBlock} from "../VariableBlock";
+import {FunctionCallOuterBlock} from "./FunctionCallOuterBlock";
+
+export class FunctionOuterBlock extends OuterBlock {
+  functionName: string
+
+  constructor(functionName: string = `function_${blockStore.blocks.length}`) {
+    super(
+      new Vec2(100, 100), 150, 200,
+      `function_${blockStore.blocks.length}`,
+      [
+        new BlockPosition(50, 50, 100, 50),
+        new BlockPosition(50, 125, 100, 50)
+      ]
+    );
+    this.element.style.background = FUNCTION
+    this.functionName = functionName
+
+    const inputText = document.createElement('span')
+    inputText.innerText = "with variables:"
+    inputText.style.fontSize = '12px'
+    inputText.style.fontWeight = 'bold'
+    inputText.style.position = 'absolute'
+    inputText.style.color = 'white'
+    inputText.style.top = '30px'
+    inputText.style.left = '5px'
+
+    const doText = document.createElement('span')
+    doText.innerText = 'do'
+    doText.style.fontSize = '12px'
+    doText.style.fontWeight = 'bold'
+    doText.style.position = 'absolute'
+    doText.style.color = 'white'
+    doText.style.top = '80px'
+    doText.style.left = '5px'
+
+    const generateButton = document.createElement('button')
+    generateButton.style.position = 'absolute'
+    generateButton.style.top = '27.5px'
+    generateButton.style.left = '110px'
+    generateButton.innerText = '生成'
+    generateButton.style.fontSize = '10px'
+
+    const func = document.createElement('span')
+    func.innerText = '[func]'
+    func.style.fontSize = '12px'
+    func.style.fontWeight = 'bold'
+    func.style.position = 'absolute'
+    func.style.color = 'white'
+    func.style.top = '5px'
+    func.style.left = '5px'
+
+    const nameInput = document.createElement('input')
+    nameInput.value = functionName
+    nameInput.style.position = 'absolute'
+    nameInput.style.left = '50px'
+    nameInput.style.width = '75px'
+    nameInput.style.top = '5px'
+
+    generateButton.onclick = () => {
+      const children = Array.from(this.children.values())
+      blockStore.blocks.push(
+        new FunctionCallOuterBlock(this.functionName)
+      )
+    }
+    nameInput.onchange = (event) => {
+      const { target } = event
+      if (!(target instanceof HTMLInputElement)) {
+        return
+      }
+      this.functionName = target.value
+    }
+
+    this.element.appendChild(inputText)
+    this.element.appendChild(doText)
+    this.element.appendChild(generateButton)
+    this.element.appendChild(func)
+    this.element.appendChild(nameInput)
+  }
+
+  validate(): boolean {
+    return false;
+  }
+
+  getExpression(): IStatement {
+    const children = Array.from(this.children.values())
+    return new FDynamicFunction(
+      this.functionName, (children[0][0] as VariableBlock).getExpression(), children[1].map((block) => block.getExpression())
+    )
+  }
+}

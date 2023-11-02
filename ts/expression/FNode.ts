@@ -3,14 +3,15 @@ import {
   ComparisonOperator,
   IAssignOperatorExpression,
   IBlockStatement,
-  IComparisonExpression,
+  IComparisonExpression, IDynamicFunction,
   IExpression,
-  IExpressionStatement, IFunction, IFunctionBody,
+  IExpressionStatement, IFunction,
   IIdentifier, IIntLiteral,
   INode, IOperatorExpression,
   IProgram,
   IStatement, IVariable, Operator
 } from "./interface/INode";
+import {Interpreter} from "../engine/Interpreter";
 
 export class FProgram implements IProgram {
   type: string = "Program"
@@ -57,34 +58,16 @@ export class FIntLiteral implements IIntLiteral {
   }
 }
 
+/**
+ * ノードとしての変数の表現
+ * ※ Variable とは異なることに注意
+ */
 export class FVariable implements IVariable {
   type: string = "Variable"
-  id: string
+  id: IIdentifier
 
   constructor(id: string) {
-    this.id = id
-  }
-}
-
-export class FFunction implements IFunction {
-  id: string
-  params: IIdentifier[] | null
-  type = "Function"
-  body: IFunctionBody
-
-  constructor(id: string, params: IIdentifier[] | null, body: IFunctionBody) {
-    this.id = id
-    this.params = params
-    this.body = body
-  }
-}
-
-export class FFunctionBody implements IFunctionBody {
-  body: IStatement[];
-  type: string = "FunctionBody"
-
-  constructor(body: IStatement[]) {
-    this.body = body
+    this.id = new FIdentifier(id)
   }
 }
 
@@ -115,14 +98,42 @@ export class FComparisonExpression implements IComparisonExpression {
 }
 
 export class FAssignOperatorExpression implements IAssignOperatorExpression {
-  left: IVariable
+  left: IIdentifier
   operator: AssignOperator
   right: IExpression
   type: string = "AssignOperatorExpression"
 
-  constructor(operator: AssignOperator, left: IVariable, right: IExpression) {
+  constructor(operator: AssignOperator, left: IIdentifier, right: IExpression) {
     this.operator = operator
     this.left = left
     this.right = right
+  }
+}
+
+/**
+ * ノードとしての関数の呼び出しの表現
+ * ※ Func とは異なることに注意
+ */
+export class FFunctionCall implements IFunction {
+  id: IIdentifier;
+  type: string = "Function"
+  arg: IExpression
+
+  constructor(id: string, arg: IExpression) {
+    this.id = new FIdentifier(id)
+    this.arg = arg
+  }
+}
+
+export class FDynamicFunction implements IDynamicFunction {
+  id: IIdentifier
+  type: string = "Function"
+  arg: IIdentifier
+  body: IStatement[]
+
+  constructor(id: string, arg: IIdentifier, body: IStatement[]) {
+    this.id = new FIdentifier(id)
+    this.arg = arg
+    this.body = body
   }
 }
