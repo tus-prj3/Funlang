@@ -13,13 +13,13 @@ import {
 import {
   FAssignOperatorExpression,
   FBlockStatement,
-  FComparisonExpression,
-  FExpressionStatement, FFunction, FIdentifier,
+  FComparisonExpression, FDynamicFunction,
+  FExpressionStatement, FFunctionCall, FIdentifier,
   FIntLiteral,
   FOperatorExpression,
   FVariable
 } from "../expression/FNode";
-import {Func, Println} from "../expression/entities/Function";
+import {DynamicFunction, Func, Println} from "../expression/entities/Function";
 import {Variable} from "../expression/entities/Variable";
 
 export class Interpreter {
@@ -50,6 +50,8 @@ export class Interpreter {
       statement.body.forEach((st) => this.statement(st))
     } else if (statement instanceof FComparisonExpression) {
       this.expression(statement)
+    } else if (statement instanceof FDynamicFunction) {
+      return this.dynamicFunc(statement)
     }
   }
 
@@ -62,7 +64,7 @@ export class Interpreter {
       return this.digit(expression)
     } else if (expression instanceof FIdentifier) {
       return this.varOrFunc(expression)
-    } else if (expression instanceof FFunction) {
+    } else if (expression instanceof FFunctionCall) {
       return this.invoke(expression)
     } else if (expression instanceof FComparisonExpression) {
       const tmp: boolean = this.compare(expression)
@@ -71,7 +73,21 @@ export class Interpreter {
     }
   }
 
-  public invoke(expression: FFunction) {
+  public dynamicFunc(expression: FDynamicFunction) {
+    const name = expression.id.name
+    if (this.functions.has(name)) {
+      throw new Error("Name was already used.")
+    }
+    if (this.variables.has(name)) {
+      throw new Error("Name was already used.")
+    }
+    const func = new DynamicFunction(
+      name, this, expression.arg, expression.body
+    )
+    this.functions.set(name, func)
+  }
+
+  public invoke(expression: FFunctionCall) {
     const f = this.func(this.expression(expression.id))
     const value = this.value(this.expression(expression.arg))
     return f.invoke(value)
@@ -85,7 +101,6 @@ export class Interpreter {
   }
 
   public assign(assignExpression: IAssignOperatorExpression): Variable {
-    console.info(assignExpression)
     const variable = this.variable(this.expression(assignExpression.left))
     variable.value = this.value(this.expression(assignExpression.right))
     return variable
@@ -127,8 +142,8 @@ export class Interpreter {
   }
 
   public calc(operatorExpression: IOperatorExpression): number {
-    const left = this.expression(operatorExpression.left)
-    const right = this.expression(operatorExpression.right)
+    const left = this.value(this.expression(operatorExpression.left))
+    const right = this.value(this.expression(operatorExpression.right))
     switch (operatorExpression.operator) {
       case Operator.PLUS:
         return left + right
@@ -142,7 +157,6 @@ export class Interpreter {
   }
 
   public compare(comparisonExpression: IComparisonExpression): boolean {
-    console.info(comparisonExpression)
     const left = this.expression(comparisonExpression.left)
     const right = this.expression(comparisonExpression.right)
     switch (comparisonExpression.comparison) {

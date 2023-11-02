@@ -3,8 +3,10 @@ import {blockStore} from "../../index";
 import {BlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "../base/OuterBlock";
 import {IStatement} from "../../expression/interface/INode";
-import {FIntLiteral} from "../../expression/FNode";
+import {FDynamicFunction, FIntLiteral} from "../../expression/FNode";
 import {FUNCTION} from "../../types/Color";
+import {VariableBlock} from "../VariableBlock";
+import {FunctionCallOuterBlock} from "./FunctionCallOuterBlock";
 
 export class FunctionOuterBlock extends OuterBlock {
   functionName: string
@@ -62,6 +64,20 @@ export class FunctionOuterBlock extends OuterBlock {
     nameInput.style.width = '75px'
     nameInput.style.top = '5px'
 
+    generateButton.onclick = () => {
+      const children = Array.from(this.children.values())
+      blockStore.blocks.push(
+        new FunctionCallOuterBlock(this.functionName)
+      )
+    }
+    nameInput.onchange = (event) => {
+      const { target } = event
+      if (!(target instanceof HTMLInputElement)) {
+        return
+      }
+      this.functionName = target.value
+    }
+
     this.element.appendChild(inputText)
     this.element.appendChild(doText)
     this.element.appendChild(generateButton)
@@ -74,6 +90,9 @@ export class FunctionOuterBlock extends OuterBlock {
   }
 
   getExpression(): IStatement {
-    return new FIntLiteral(10);
+    const children = Array.from(this.children.values())
+    return new FDynamicFunction(
+      this.functionName, (children[0][0] as VariableBlock).getExpression(), children[1].map((block) => block.getExpression())
+    )
   }
 }

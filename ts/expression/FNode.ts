@@ -3,7 +3,7 @@ import {
   ComparisonOperator,
   IAssignOperatorExpression,
   IBlockStatement,
-  IComparisonExpression,
+  IComparisonExpression, IDynamicFunction,
   IExpression,
   IExpressionStatement, IFunction,
   IIdentifier, IIntLiteral,
@@ -111,16 +111,27 @@ export class FAssignOperatorExpression implements IAssignOperatorExpression {
 }
 
 /**
- * ノードとしての関数の表現
+ * ノードとしての関数の呼び出しの表現
  * ※ Func とは異なることに注意
  */
-export class FFunction implements IFunction {
+export class FFunctionCall implements IFunction {
   id: IIdentifier;
   type: string = "Function"
   arg: IExpression
+
+  constructor(id: string, arg: IExpression) {
+    this.id = new FIdentifier(id)
+    this.arg = arg
+  }
+}
+
+export class FDynamicFunction implements IDynamicFunction {
+  id: IIdentifier
+  type: string = "Function"
+  arg: IIdentifier
   body: IStatement[]
 
-  constructor(id: string, arg: IExpression, body: IStatement[]) {
+  constructor(id: string, arg: IIdentifier, body: IStatement[]) {
     this.id = new FIdentifier(id)
     this.arg = arg
     this.body = body

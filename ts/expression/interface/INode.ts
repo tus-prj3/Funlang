@@ -39,6 +39,11 @@ export interface IBlockStatement extends IStatement {
 export interface IFunction extends INode {
   id: IIdentifier
   arg: IExpression
+}
+
+export interface IDynamicFunction extends INode {
+  type: string
+  arg: IExpression
   body: IStatement[]
 }
 
