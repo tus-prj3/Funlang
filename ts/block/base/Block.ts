@@ -256,7 +256,14 @@ export abstract class Block implements IBlockPosition {
         }
       }
 
-      this.parent.recalculateHeight()
+      const dheight = this.parent.recalculateHeight()
+      console.info(dheight)
+      const nextBlocks = this.parent.connectedNextBlocks().filter((block) => block !== this.parent)
+      nextBlocks.forEach((block) => {
+        block.setPosition(
+          new Vec2(block.x, block.y + dheight)
+        )
+      })
 
       connectedBlocks.forEach((block) => {
         const nextAbsolutePos = block.element.getBoundingClientRect()

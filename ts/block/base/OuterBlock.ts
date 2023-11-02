@@ -100,12 +100,20 @@ export abstract class OuterBlock extends Block {
             innerConnectBlock.element
           )
         })
-        this.recalculateHeight()
+
+        const dheight = this.recalculateHeight()
+        const nextBlocks = this.connectedNextBlocks().filter((block) => block !== this)
+        nextBlocks.forEach((block) => {
+          block.setPosition(
+            new Vec2(block.x, block.y + dheight)
+          )
+        })
       }
     }
   }
 
   public recalculateHeight() {
+    let prevHeight = this.height
     let placeHolderHeight = 0
     let childrenBlocksAllHeight = 0
     this.children.forEach((value, key) => {
@@ -119,6 +127,8 @@ export abstract class OuterBlock extends Block {
     const nextHeight = (this.initialHeight - placeHolderHeight) + childrenBlocksAllHeight
     this.element.style.height = nextHeight + 'px'
     this.height = nextHeight
+
+    return this.height - prevHeight
   }
 
   public removeHighlightChildren() {
