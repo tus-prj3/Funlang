@@ -1,8 +1,6 @@
 // noinspection all
 import {NumberBlock} from "./block/base/internal";
 import {BlockStore} from "./store/BlockStore";
-import {BlockPosition} from "./interface/IBlockPosition";
-import {SimpleOuterBlock} from "./block/SimpleOuterBlock";
 import {Interpreter} from "./engine/Interpreter";
 import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
@@ -13,15 +11,17 @@ import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
 
 const generateButton = document.getElementById('generate')
 const logButton = document.getElementById('log')
-const outerButton = document.getElementById('outer')
+const operatorButton = document.getElementById('operator')
 const mainButton = document.getElementById('main')
 const comparisonButton = document.getElementById('comparison')
+const functionButton = document.getElementById('function')
+const variableButton = document.getElementById('variable')
+const printButton = document.getElementById('print')
 
 export const blockStore = new BlockStore()
 
 generateButton!.onclick = (_) => {
   blockStore.blocks.push(
-    // new Block(new Vec2(100, 100), 100, 50, `test_${blockStore.blocks.length}`, new FLiteral(10))
     new NumberBlock(10)
   )
 }
@@ -32,15 +32,18 @@ logButton!.onclick = (_) => {
     console.error("構造に誤りがあります.")
     return
   }*/
+  console.info("--- Ast info ---")
   console.info(blockStore.getAst())
+  console.info("--- Blocks info ---")
+  console.info(blockStore.blocks)
 
   const interpreter = new Interpreter(blockStore.getAst())
   interpreter.run()
 }
 
-outerButton!.onclick = (_) => {
+operatorButton!.onclick = (_) => {
   blockStore.blocks.push(
-    new FunctionOuterBlock()
+    new OperatorOuterBlock()
   )
 }
 
@@ -61,5 +64,23 @@ mainButton!.onclick = (_) => {
 comparisonButton!.onclick = (_) => {
   blockStore.blocks.push(
     new ComparisonOuterBrock()
+  )
+}
+
+functionButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new FunctionOuterBlock()
+  )
+}
+
+variableButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new VariableBlock("x")
+  )
+}
+
+printButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new PrintFunctionOuterBlock()
   )
 }

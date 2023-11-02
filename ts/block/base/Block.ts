@@ -230,7 +230,7 @@ export abstract class Block implements IBlockPosition {
       const prevConnectedOuterBlock = this.parent
       const prevConnectedPosition = this.parentBlockPosition!
       // 縮める長さ
-      const dh = this.height - prevConnectedPosition.height
+      const dh = this.connectedNextBlocks().map((block) => block.height).reduce((s, t) => s + t) - prevConnectedPosition.height
       const blockPositions = Array.from(prevConnectedOuterBlock.childrenPositions.keys())
       for (let i = 0; i < prevConnectedOuterBlock.childrenPositions.size; i++) {
         // 接続場所以降の接続できる場所をずらす

@@ -63,7 +63,7 @@ export abstract class OuterBlock extends Block {
 
         // 接続場所を特定するためのフラグ
         let flag: boolean = false
-        const dh = connectTo.height - nearestChild.height
+        const dh = tryingToSetChildBlock.connectedNextBlocks().map((block) => block.height).reduce((s, t) => s + t) - nearestChild.height
         const blockPositions = Array.from(this.childrenPositions.keys())
         for (let i = 0; i < this.childrenPositions.size; i++) {
           // 接続場所以降の接続できる場所をずらす
