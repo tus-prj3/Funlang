@@ -21,7 +21,7 @@ export interface IIntLiteral extends IExpression {
 
 export interface IVariable extends IExpression {
   type: string // "Variable"
-  id: string
+  id: IIdentifier
 }
 
 export interface IStatement extends INode {}
@@ -37,8 +37,8 @@ export interface IBlockStatement extends IStatement {
 }
 
 export interface IFunction extends INode {
-  id: string
-  params: IIdentifier[] | null
+  id: IIdentifier
+  arg: IExpression
   body: IStatement[]
 }
 
@@ -65,7 +65,7 @@ export enum ComparisonOperator {
 export interface IAssignOperatorExpression extends IExpression {
   type: string // "AssignOperatorExpression"
   operator: AssignOperator
-  left: IVariable
+  left: IIdentifier
   right: IExpression
 }
 export enum AssignOperator {

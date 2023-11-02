@@ -40,6 +40,7 @@ logButton!.onclick = (_) => {
 
   const interpreter = new Interpreter(blockStore.getAst())
   interpreter.run()
+  console.info(interpreter.variables)
 }
 
 operatorButton!.onclick = (_) => {

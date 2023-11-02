@@ -2,7 +2,7 @@ import {Block} from "./base/Block";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {IVariable} from "../expression/interface/INode";
-import {FVariable} from "../expression/FNode";
+import {FIdentifier, FVariable} from "../expression/FNode";
 
 export class VariableBlock extends Block {
   private id: string
@@ -47,8 +47,8 @@ export class VariableBlock extends Block {
     this.id = target.value
   }
 
-  public override getExpression(): IVariable {
-    return new FVariable(this.id)
+  public override getExpression() {
+    return new FIdentifier(this.id)
   }
 
   public validate(): boolean {

@@ -1,32 +1,36 @@
 import {
+  ComparisonOperator,
   IAssignOperatorExpression,
-  IExpression,
+  IComparisonExpression,
+  IExpression, IFunction, IIdentifier,
   IIntLiteral,
   IOperatorExpression,
-  IComparisonExpression,
   IProgram,
   IStatement,
   IVariable,
-  Operator,
-  ComparisonOperator
+  Operator
 } from "../expression/interface/INode";
 import {
   FAssignOperatorExpression,
   FBlockStatement,
-  FExpressionStatement,
+  FComparisonExpression,
+  FExpressionStatement, FFunction, FIdentifier,
   FIntLiteral,
   FOperatorExpression,
-  FPrintFunction,
-  FComparisonExpression,
   FVariable
 } from "../expression/FNode";
+import {Func, Println} from "../expression/entities/Function";
+import {Variable} from "../expression/entities/Variable";
 
 export class Interpreter {
-  public variables: Map<string, number> = new Map<string, number>()
+  public variables: Map<string, Variable> = new Map<string, Variable>()
+  public functions: Map<string, Func> = new Map<string, Func>()
   public program: IProgram
 
   constructor(program: IProgram) {
     this.program = program
+
+    this.functions.set("println", new Println())
   }
 
   public run() {
@@ -49,17 +53,17 @@ export class Interpreter {
     }
   }
 
-  public expression(expression: IExpression): any {
+  public expression(expression: any): any {
     if (expression instanceof FAssignOperatorExpression) {
       return this.assign(expression)
     } else if (expression instanceof FOperatorExpression) {
       return this.calc(expression)
     } else if (expression instanceof FIntLiteral) {
-      return this.value(expression)
-    } else if (expression instanceof FVariable) {
-      return this.variable(expression)
-    } else if (expression instanceof FPrintFunction) {
-      return expression.invoke(this.expression(expression.arg))
+      return this.digit(expression)
+    } else if (expression instanceof FIdentifier) {
+      return this.varOrFunc(expression)
+    } else if (expression instanceof FFunction) {
+      return this.invoke(expression)
     } else if (expression instanceof FComparisonExpression) {
       const tmp: boolean = this.compare(expression)
       console.log(tmp)
@@ -67,25 +71,59 @@ export class Interpreter {
     }
   }
 
-  public assign(assignExpression: IAssignOperatorExpression) {
-    const variableName = this.variable(assignExpression.left)
-    const value = this.expression(assignExpression.right)
-    this.variables.set(variableName, value)
-    return variableName
+  public invoke(expression: FFunction) {
+    const f = this.func(this.expression(expression.id))
+    const value = this.value(this.expression(expression.arg))
+    return f.invoke(value)
   }
 
-  public variable(variable: IVariable): any {
-    const name = variable.id
+  public func(value: any) {
+    if (value instanceof Func) {
+      return value
+    }
+    throw new Error("Not a function!(#func)")
+  }
+
+  public assign(assignExpression: IAssignOperatorExpression): Variable {
+    console.info(assignExpression)
+    const variable = this.variable(this.expression(assignExpression.left))
+    variable.value = this.value(this.expression(assignExpression.right))
+    return variable
+  }
+
+  public varOrFunc(arg: IIdentifier): any {
+    const name = arg.name
     if (this.variables.has(name)) {
       return this.variables.get(name)!
+    } else if (this.functions.has(name)) {
+      return this.functions.get(name)!
     } else {
-      this.variables.set(name, 0)
-      return name
+      const variable = new Variable(name, 0)
+      this.variables.set(name, variable)
+      return variable
     }
   }
 
-  public value(intLiteral: IIntLiteral): number {
+  public variable(maybeVariable: any): Variable {
+    if (maybeVariable instanceof Variable) {
+      return maybeVariable
+    } else {
+      throw new Error("left value should be an instance of FVariable!")
+    }
+  }
+
+  public digit(intLiteral: FIntLiteral): number {
     return intLiteral.value
+  }
+
+  public value(value: any): any {
+    if (typeof value === 'number') {
+      return value
+    } else if (value instanceof Variable) {
+      return value.value
+    } else {
+      throw new Error("right value should be instances of FIntLiteral, FVariable!")
+    }
   }
 
   public calc(operatorExpression: IOperatorExpression): number {

@@ -133,7 +133,7 @@ export abstract class Block implements IBlockPosition {
 
   public canConnect(targetBlock: Block) {
     const side = this.calcDirection(targetBlock.center())
-    return side === Direction.DOWN && targetBlock.center().distance(this.center()) <= 200
+    return side === Direction.DOWN && this.middlePoint(Direction.DOWN).distance(targetBlock.middlePoint(Direction.UP)) <= 50
   }
 
   private highlightSide() {
