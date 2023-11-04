@@ -43,7 +43,7 @@ export class FunctionCallOuterBlock extends OuterBlock {
     const children = Array.from(this.children.values())
     return new FExpressionStatement(
       new FFunctionCall(
-        this.functionName, children[0][0].getExpression()
+        this.functionName, children[0][0].connectedNextBlocks().map((block) => block.getExpression())
       )
     );
   }

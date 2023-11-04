@@ -117,23 +117,23 @@ export class FAssignOperatorExpression implements IAssignOperatorExpression {
 export class FFunctionCall implements IFunction {
   id: IIdentifier;
   type: string = "Function"
-  arg: IExpression
+  args: IExpression[]
 
-  constructor(id: string, arg: IExpression) {
+  constructor(id: string, arg: IExpression[]) {
     this.id = new FIdentifier(id)
-    this.arg = arg
+    this.args = arg
   }
 }
 
 export class FDynamicFunction implements IDynamicFunction {
   id: IIdentifier
   type: string = "Function"
-  arg: IIdentifier
+  args: IIdentifier[]
   body: IStatement[]
 
-  constructor(id: string, arg: IIdentifier, body: IStatement[]) {
+  constructor(id: string, args: IIdentifier[], body: IStatement[]) {
     this.id = new FIdentifier(id)
-    this.arg = arg
+    this.args = args
     this.body = body
   }
 }

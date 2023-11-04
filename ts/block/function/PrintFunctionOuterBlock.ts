@@ -49,7 +49,7 @@ export class PrintFunctionOuterBlock extends OuterBlock {
   getExpression(): IStatement {
     const children = Array.from(this.children.values())
     return new FExpressionStatement(
-      new FFunctionCall("println", children[0][0].getExpression())
+      new FFunctionCall("println", children[0][0].connectedNextBlocks().map((block) => block.getExpression()))
     )
   }
 }

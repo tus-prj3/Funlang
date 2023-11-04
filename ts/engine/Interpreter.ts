@@ -76,20 +76,35 @@ export class Interpreter {
   public dynamicFunc(expression: FDynamicFunction) {
     const name = expression.id.name
     if (this.functions.has(name)) {
-      throw new Error("Name was already used.")
+      throw new Error("関数名はすでに使用されています.")
     }
     if (this.variables.has(name)) {
-      throw new Error("Name was already used.")
+      throw new Error("関数名が変数名と重複しています.")
     }
+    if (expression.args.filter((val, i, arr) => {
+      return arr.indexOf(val) != i
+    }).length != 0) {
+      // 仮引数に重複があった場合
+      throw new Error("仮引数に重複があります.")
+    }
+    // 仮引数がすでに使用されている場合
+    expression.args.forEach((arg) => {
+      if (this.variables.has(arg.name)) {
+        throw new Error(`仮引数がすでに変数として定義されています. (name: ${arg.name}`)
+      }
+    })
+
     const func = new DynamicFunction(
-      name, this, expression.arg, expression.body
+      name, this, expression.args, expression.body
     )
     this.functions.set(name, func)
   }
 
   public invoke(expression: FFunctionCall) {
     const f = this.func(this.expression(expression.id))
-    const value = this.value(this.expression(expression.arg))
+    const value = expression.args.map((arg) => {
+      return this.value(this.expression(arg))
+    })
     return f.invoke(value)
   }
 
