@@ -1,6 +1,7 @@
 import {Interpreter} from "../../engine/Interpreter";
 import {IIdentifier, IStatement} from "../interface/INode";
 import {Variable} from "./Variable";
+import {ReturnNotifier} from "../../types/ReturnNotifier";
 
 /**
  * 関数の実態
@@ -42,6 +43,8 @@ export class DynamicFunction extends Func {
         variable.value = null
       }
     }
-    this.context.body(this.block)
+    // 関数定義内では return 可能
+    const returnNotifier = new ReturnNotifier(true, false)
+    return this.context.body(this.block, returnNotifier)
   }
 }

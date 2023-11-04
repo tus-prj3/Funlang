@@ -5,10 +5,10 @@ import {
   IBlockStatement,
   IComparisonExpression, IDynamicFunction,
   IExpression,
-  IExpressionStatement, IFunction,
+  IFunction,
   IIdentifier, IIntLiteral,
-  INode, IOperatorExpression,
-  IProgram,
+  IOperatorExpression,
+  IProgram, IReturnStatement,
   IStatement, IVariable, Operator
 } from "./interface/INode";
 import {Interpreter} from "../engine/Interpreter";
@@ -28,15 +28,6 @@ export class FBlockStatement implements IBlockStatement {
 
   constructor(body: IStatement[]) {
     this.body = body
-  }
-}
-
-export class FExpressionStatement implements IExpressionStatement {
-  type = "ExpressionStatement"
-  expression: IExpression
-
-  constructor(expression: IExpression) {
-    this.expression = expression
   }
 }
 
@@ -114,7 +105,7 @@ export class FAssignOperatorExpression implements IAssignOperatorExpression {
  * ノードとしての関数の呼び出しの表現
  * ※ Func とは異なることに注意
  */
-export class FFunctionCall implements IFunction {
+export class FFunctionCallExpression implements IFunction {
   id: IIdentifier;
   type: string = "Function"
   args: IExpression[]
@@ -134,6 +125,15 @@ export class FDynamicFunction implements IDynamicFunction {
   constructor(id: string, args: IIdentifier[], body: IStatement[]) {
     this.id = new FIdentifier(id)
     this.args = args
+    this.body = body
+  }
+}
+
+export class FReturnStatement implements IReturnStatement {
+  body: IExpression
+  type: string = "ReturnExpression"
+
+  constructor(body: IExpression) {
     this.body = body
   }
 }

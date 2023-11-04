@@ -1,6 +1,6 @@
 import {OuterBlock} from "../base/OuterBlock";
 import {IStatement} from "../../expression/interface/INode";
-import {FExpressionStatement, FFunctionCall} from "../../expression/FNode";
+import {FFunctionCallExpression} from "../../expression/FNode";
 import {Vec2} from "../../types/Vec2";
 import {blockStore} from "../../index";
 import {BlockPosition} from "../../interface/IBlockPosition";
@@ -8,7 +8,6 @@ import {VariableBlock} from "../VariableBlock";
 import {NumberBlock} from "../NumberBlock";
 import {OperatorOuterBlock} from "../OperatorOuterBlock";
 import {FUNCTION} from "../../types/Color";
-import {Func} from "../../expression/entities/Function";
 
 export class PrintFunctionOuterBlock extends OuterBlock {
   constructor() {
@@ -48,8 +47,6 @@ export class PrintFunctionOuterBlock extends OuterBlock {
 
   getExpression(): IStatement {
     const children = Array.from(this.children.values())
-    return new FExpressionStatement(
-      new FFunctionCall("println", children[0][0].connectedNextBlocks().map((block) => block.getExpression()))
-    )
+    return new FFunctionCallExpression("println", children[0][0].connectedNextBlocks().map((block) => block.getExpression()))
   }
 }
