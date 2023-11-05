@@ -1,7 +1,7 @@
 import {Interpreter} from "../../engine/Interpreter";
 import {IIdentifier, IStatement} from "../interface/INode";
-import {Variable} from "./Variable";
 import {ReturnNotifier} from "../../types/ReturnNotifier";
+import {ConsoleStore} from "../../store/ConsoleStore";
 
 /**
  * 関数の実態
@@ -15,7 +15,7 @@ export class Println extends Func {
   name: string = 'println'
 
   invoke(arg: any[]): any {
-    console.info(arg[0])
+    ConsoleStore.out(arg[0])
   }
 }
 
