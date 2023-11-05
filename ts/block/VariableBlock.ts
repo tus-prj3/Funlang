@@ -1,8 +1,8 @@
 import {Block} from "./base/Block";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
-import {IVariable} from "../expression/interface/INode";
-import {FIdentifier, FVariable} from "../expression/FNode";
+import {FIdentifier} from "../expression/FNode";
+import {VARIABLE} from "../types/Color";
 
 export class VariableBlock extends Block {
   private id: string
@@ -23,7 +23,7 @@ export class VariableBlock extends Block {
     this.inputElement.oninput = this.onChangeValue
     this.element.appendChild(this.inputElement)
 
-    this.element.style.background = '#5B67A5'
+    this.element.style.background = VARIABLE
     this.element.style.textAlign = 'center'
     this.element.style.display = 'grid'
     this.element.style.placeItems = 'center'
