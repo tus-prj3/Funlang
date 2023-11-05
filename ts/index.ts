@@ -18,7 +18,7 @@ const comparisonButton = document.getElementById('comparison')
 const functionButton = document.getElementById('function')
 const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
-const defineButton = document.getElementById('define')
+const assignButton = document.getElementById('assign')
 const returnButton = document.getElementById('return')
 
 export const blockStore = new BlockStore()
@@ -90,7 +90,7 @@ printButton!.onclick = (_) => {
   )
 }
 
-defineButton!.onclick = (_) => {
+assignButton!.onclick = (_) => {
   blockStore.blocks.push(
     new AssignOuterBlock()
   )
