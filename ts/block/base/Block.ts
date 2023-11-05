@@ -5,7 +5,7 @@ import {blockStore} from "../../index";
 import {BlockPosition, IBlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "./internal";
 import {getMinimumDistBlock} from "../../store/BlockStore";
-import {IStatement} from "../../expression/interface/INode";
+import {IExpression, IStatement} from "../../expression/interface/INode";
 
 export abstract class Block implements IBlockPosition {
   public x: number
@@ -257,7 +257,6 @@ export abstract class Block implements IBlockPosition {
       }
 
       const dheight = this.parent.recalculateHeight()
-      console.info(dheight)
       const nextBlocks = this.parent.connectedNextBlocks().filter((block) => block !== this.parent)
       nextBlocks.forEach((block) => {
         block.setPosition(
@@ -354,5 +353,5 @@ export abstract class Block implements IBlockPosition {
 
   public abstract validate(): boolean
 
-  public abstract getExpression(): IStatement
+  public abstract getExpression(): IExpression
 }

@@ -8,5 +8,6 @@ export function getRandomColor() {
 }
 
 export const FUNCTION = '#995ba5'
-export const LET = '#A58551'
+export const ASSIGN = '#A58551'
 export const OPERATOR = '#51791A'
+export const VARIABLE = '#838521'

@@ -8,6 +8,7 @@ import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ComparisonOuterBrock} from "./block/ComparisonOuterBrock";
 import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
+import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -17,7 +18,8 @@ const comparisonButton = document.getElementById('comparison')
 const functionButton = document.getElementById('function')
 const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
-const defineButton = document.getElementById('define')
+const assignButton = document.getElementById('assign')
+const returnButton = document.getElementById('return')
 
 export const blockStore = new BlockStore()
 
@@ -88,8 +90,14 @@ printButton!.onclick = (_) => {
   )
 }
 
-defineButton!.onclick = (_) => {
+assignButton!.onclick = (_) => {
   blockStore.blocks.push(
     new AssignOuterBlock()
+  )
+}
+
+returnButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new ReturnOuterBlock()
   )
 }

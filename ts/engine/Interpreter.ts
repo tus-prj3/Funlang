@@ -2,25 +2,25 @@ import {
   ComparisonOperator,
   IAssignOperatorExpression,
   IComparisonExpression,
-  IExpression, IFunction, IIdentifier,
-  IIntLiteral,
+  IIdentifier,
   IOperatorExpression,
   IProgram,
   IStatement,
-  IVariable,
   Operator
 } from "../expression/interface/INode";
 import {
   FAssignOperatorExpression,
-  FBlockStatement,
-  FComparisonExpression, FDynamicFunction,
-  FExpressionStatement, FFunctionCall, FIdentifier,
+  FComparisonExpression,
+  FDynamicFunction,
+  FFunctionCallExpression,
+  FIdentifier,
   FIntLiteral,
   FOperatorExpression,
-  FVariable
+  FReturnStatement
 } from "../expression/FNode";
 import {DynamicFunction, Func, Println} from "../expression/entities/Function";
 import {Variable} from "../expression/entities/Variable";
+import {ReturnNotifier} from "../types/ReturnNotifier";
 
 export class Interpreter {
   public variables: Map<string, Variable> = new Map<string, Variable>()
@@ -34,25 +34,28 @@ export class Interpreter {
   }
 
   public run() {
-    this.body(this.program.body)
+    this.body(this.program.body, new ReturnNotifier())
   }
 
-  public body(body: IStatement[]) {
+  public body(body: IStatement[], returnNotifier: ReturnNotifier) {
     for (let statement of body) {
-      this.statement(statement)
+      if (statement instanceof FReturnStatement) {
+        if (!returnNotifier.canReturnable) {
+          throw new Error("ここで return を定義することはできません.")
+        }
+        returnNotifier.shouldNotifyReturnToCalledFrom = true
+        if (statement.body == null) {
+          // return が指定されているが何も返さないとき
+          return null
+        } else {
+          // 呼び出し元に return で指定した statement を返す.
+          return this.expression(statement.body)
+        }
+      } else {
+        this.expression(statement)
+      }
     }
-  }
-
-  public statement(statement: IStatement) {
-    if (statement instanceof FExpressionStatement) {
-      this.expression(statement.expression)
-    } else if (statement instanceof FBlockStatement) {
-      statement.body.forEach((st) => this.statement(st))
-    } else if (statement instanceof FComparisonExpression) {
-      this.expression(statement)
-    } else if (statement instanceof FDynamicFunction) {
-      return this.dynamicFunc(statement)
-    }
+    return null
   }
 
   public expression(expression: any): any {
@@ -64,32 +67,47 @@ export class Interpreter {
       return this.digit(expression)
     } else if (expression instanceof FIdentifier) {
       return this.varOrFunc(expression)
-    } else if (expression instanceof FFunctionCall) {
+    } else if (expression instanceof FFunctionCallExpression) {
       return this.invoke(expression)
     } else if (expression instanceof FComparisonExpression) {
-      const tmp: boolean = this.compare(expression)
-      console.log(tmp)
-      return tmp
+      return this.compare(expression)
+    } else if (expression instanceof FDynamicFunction) {
+      return this.dynamicFunc(expression)
     }
   }
 
   public dynamicFunc(expression: FDynamicFunction) {
     const name = expression.id.name
     if (this.functions.has(name)) {
-      throw new Error("Name was already used.")
+      throw new Error("関数名はすでに使用されています.")
     }
     if (this.variables.has(name)) {
-      throw new Error("Name was already used.")
+      throw new Error("関数名が変数名と重複しています.")
     }
+    if (expression.args.filter((val, i, arr) => {
+      return arr.indexOf(val) != i
+    }).length != 0) {
+      // 仮引数に重複があった場合
+      throw new Error("仮引数に重複があります.")
+    }
+    // 仮引数がすでに使用されている場合
+    expression.args.forEach((arg) => {
+      if (this.variables.has(arg.name)) {
+        throw new Error(`仮引数がすでに変数として定義されています. (name: ${arg.name}`)
+      }
+    })
+
     const func = new DynamicFunction(
-      name, this, expression.arg, expression.body
+      name, this, expression.args, expression.body
     )
     this.functions.set(name, func)
   }
 
-  public invoke(expression: FFunctionCall) {
+  public invoke(expression: FFunctionCallExpression) {
     const f = this.func(this.expression(expression.id))
-    const value = this.value(this.expression(expression.arg))
+    const value = expression.args.map((arg) => {
+      return this.value(this.expression(arg))
+    })
     return f.invoke(value)
   }
 

@@ -3,7 +3,7 @@ import {INode, ComparisonOperator} from "../expression/interface/INode";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
-import {FComparisonExpression, FExpressionStatement, FIntLiteral, FOperatorExpression, FProgram} from "../expression/FNode";
+import {FComparisonExpression} from "../expression/FNode";
 import {NumberBlock} from "./NumberBlock";
 import {OPERATOR} from "../types/Color";
 

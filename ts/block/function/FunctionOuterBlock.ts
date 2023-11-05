@@ -92,7 +92,8 @@ export class FunctionOuterBlock extends OuterBlock {
   getExpression(): IStatement {
     const children = Array.from(this.children.values())
     return new FDynamicFunction(
-      this.functionName, (children[0][0] as VariableBlock).getExpression(), children[1].map((block) => block.getExpression())
+      this.functionName, children[0][0].connectedNextBlocks().map((block) => (block as VariableBlock).getExpression()),
+      children[1].map((block) => block.getExpression())
     )
   }
 }

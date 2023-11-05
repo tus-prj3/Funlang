@@ -26,11 +26,6 @@ export interface IVariable extends IExpression {
 
 export interface IStatement extends INode {}
 
-export interface IExpressionStatement extends IStatement {
-  type: string // "ExpressionStatement"
-  expression: IExpression
-}
-
 export interface IBlockStatement extends IStatement {
   type: string // "BlockStatement"
   body: IStatement[]
@@ -38,13 +33,17 @@ export interface IBlockStatement extends IStatement {
 
 export interface IFunction extends INode {
   id: IIdentifier
-  arg: IExpression
+  args: IExpression[]
 }
 
 export interface IDynamicFunction extends INode {
   type: string
-  arg: IExpression
+  args: IExpression[]
   body: IStatement[]
+}
+
+export interface IReturnStatement extends IStatement {
+  body: IExpression
 }
 
 export interface IOperatorExpression extends IExpression {

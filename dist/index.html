@@ -7,17 +7,26 @@
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<button id="number">number</button>
-<button id="log">log</button>
-<button id="operator">operator</button>
-<button id="main">main</button>
-<button id = "comparison">comparison</button>
-<button id = "function">function</button>
-<button id = "variable">variable</button>
-<button id = "print">print</button>
-<button id = "define">define</button>
-<script src="index.js"></script>
-<div id="workspace">
+<div id="buttonArea">
+  <button id="number">number</button>
+  <button id="log">run</button>
+  <button id="operator">operator</button>
+  <button id="main">main</button>
+  <button id="comparison">comparison</button>
+  <button id="function">function</button>
+  <button id="variable">variable</button>
+  <button id="print">print</button>
+  <button id="assign">assign</button>
+  <button id="return">return</button>
+  <button id="clear">clear-console</button>
 </div>
+<script src="index.js"></script>
+<div id="area">
+  <div id="workspace"></div>
+  <div id="result">
+    <textarea readonly disabled id="result_text_area"></textarea>
+  </div>
+</div>
+
 </body>
 </html>
