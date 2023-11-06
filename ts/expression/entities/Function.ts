@@ -49,7 +49,7 @@ export class DynamicFunction extends Func {
       if (i < args.length) {
         variable.value = this.context.value(args[i])
       } else {
-        variable.value = null
+        variable.value = 0
       }
     }
     // 関数定義内では return 可能
