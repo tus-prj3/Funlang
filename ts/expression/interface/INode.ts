@@ -46,6 +46,17 @@ export interface IReturnStatement extends IStatement {
   body: IExpression
 }
 
+export interface IIfStatement extends IStatement {
+  condition: IExpression
+  blockOfThen: IStatement[]
+}
+
+export interface IIfElseStatement extends IStatement {
+  condition: IExpression
+  blockOfThen: IStatement[]
+  blockOfElse: IStatement[]
+}
+
 export interface IOperatorExpression extends IExpression {
   type: string // "OperatorExpression"
   operator: Operator

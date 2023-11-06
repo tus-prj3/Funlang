@@ -15,7 +15,7 @@ import {
   FComparisonExpression,
   FDynamicFunction,
   FFunctionCallExpression,
-  FIdentifier,
+  FIdentifier, FIfElseStatement, FIfStatement,
   FIntLiteral,
   FLogicalExpression,
   FOperatorExpression,
@@ -42,7 +42,17 @@ export class Interpreter {
 
   public body(body: IStatement[], returnNotifier: ReturnNotifier) {
     for (let statement of body) {
-      if (statement instanceof FReturnStatement) {
+      if (statement instanceof FIfStatement) {
+        const returnValue = this.condition(statement, returnNotifier)
+        if (returnNotifier.shouldNotifyReturnToCalledFrom) {
+          return returnValue
+        }
+      } else if (statement instanceof FIfElseStatement) {
+        const returnValue = this.condition(statement, returnNotifier)
+        if (returnNotifier.shouldNotifyReturnToCalledFrom) {
+          return returnValue
+        }
+      } else if (statement instanceof FReturnStatement) {
         if (!returnNotifier.canReturnable) {
           throw new Error("ここで return を定義することはできません.")
         }
@@ -79,6 +89,24 @@ export class Interpreter {
     }else if (expression instanceof FDynamicFunction) {
       return this.dynamicFunc(expression)
     } 
+  }
+
+  public condition(expression: FIfStatement | FIfElseStatement, returnNotifier: ReturnNotifier): any {
+    if (expression instanceof FIfStatement) {
+      if (this.isTrue(expression.condition)) {
+        return this.body(expression.blockOfThen, returnNotifier)
+      }
+    } else {
+      if (this.isTrue(expression.condition)) {
+        return this.body(expression.blockOfThen, returnNotifier)
+      } else {
+        return this.body(expression.blockOfElse, returnNotifier)
+      }
+    }
+  }
+
+  public isTrue(expression: IComparisonExpression) {
+    return this.compare(expression)
   }
 
   public dynamicFunc(expression: FDynamicFunction) {
@@ -182,8 +210,8 @@ export class Interpreter {
   }
 
   public compare(comparisonExpression: IComparisonExpression): boolean {
-    const left = this.expression(comparisonExpression.left)
-    const right = this.expression(comparisonExpression.right)
+    const left = this.value(this.expression(comparisonExpression.left))
+    const right = this.value(this.expression(comparisonExpression.right))
     switch (comparisonExpression.comparison) {
       case ComparisonOperator.EQ:
         return left == right

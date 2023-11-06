@@ -11,6 +11,8 @@ import { LogicalOuterBlock } from "./block/LogicalOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
 import { ConsoleStore } from "./store/ConsoleStore";
+import {IfOuterBlock} from "./block/condition/IfOuterBlock";
+import {IfElseOuterBlock} from "./block/condition/IfElseOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -23,7 +25,9 @@ const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
 const assignButton = document.getElementById('assign')
 const returnButton = document.getElementById('return')
-const deleteButton = document.getElementById('deleteAll')
+const ifButton = document.getElementById('if')
+const ifElseButton = document.getElementById('if-else')
+const deleteButton = document.getElementById('deleteAll');
 const clearButton = document.getElementById('clear')
 const customMenu = document.getElementById('customMenu')
 
@@ -110,6 +114,18 @@ assignButton!.onclick = (_) => {
 returnButton!.onclick = (_) => {
   blockStore.blocks.push(
     new ReturnOuterBlock()
+  )
+}
+
+ifButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new IfOuterBlock()
+  )
+}
+
+ifElseButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new IfElseOuterBlock()
   )
 }
 
