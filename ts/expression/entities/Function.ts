@@ -59,4 +59,8 @@ export class DynamicFunction extends Func {
     this.context.localScope = parentScope
     return returnValue
   }
+
+  public toString = (): string => {
+    return `DynamicFunction {\n\tname: ${this.name}\n\tparams: ${this.params}\n}`
+  }
 }
