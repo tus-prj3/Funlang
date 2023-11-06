@@ -1,5 +1,5 @@
 import {OuterBlock} from "./base/OuterBlock";
-import {INode, ComparisonOperator} from "../expression/interface/INode";
+import {ComparisonOperator, IComparisonExpression} from "../expression/interface/INode";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
@@ -60,7 +60,7 @@ export class ComparisonOuterBlock extends OuterBlock {
         return true
     }
 
-    getExpression(): INode {
+    getExpression(): IComparisonExpression {
         let comparison: ComparisonOperator | null = null
         const children = Array.from(this.children.values())
         switch (this.op.value) {

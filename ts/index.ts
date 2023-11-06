@@ -5,11 +5,13 @@ import {Interpreter} from "./engine/Interpreter";
 import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
 import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
+import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
 import {ComparisonOuterBlock} from "./block/ComparisonOuterBlock";
 import { LogicalOuterBlock } from "./block/LogicalOuterBlock";
-import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
+import {IfOuterBlock} from "./block/condition/IfOuterBlock";
+import {IfElseOuterBlock} from "./block/condition/IfElseOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -22,6 +24,8 @@ const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
 const assignButton = document.getElementById('assign')
 const returnButton = document.getElementById('return')
+const ifButton = document.getElementById('if')
+const ifElseButton = document.getElementById('if-else')
 const deleteButton = document.getElementById('deleteAll');
 
 export const blockStore = new BlockStore()
@@ -80,6 +84,7 @@ logicalButton!.onclick = (_) => {
     new LogicalOuterBlock()
   )
 }
+
 functionButton!.onclick = (_) => {
   blockStore.blocks.push(
     new FunctionOuterBlock()
@@ -107,6 +112,18 @@ assignButton!.onclick = (_) => {
 returnButton!.onclick = (_) => {
   blockStore.blocks.push(
     new ReturnOuterBlock()
+  )
+}
+
+ifButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new IfOuterBlock()
+  )
+}
+
+ifElseButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new IfElseOuterBlock()
   )
 }
 
