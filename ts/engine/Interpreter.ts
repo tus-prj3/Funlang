@@ -24,16 +24,19 @@ import {
 import {DynamicFunction, Func, Println} from "../expression/entities/Function";
 import {Variable} from "../expression/entities/Variable";
 import {ReturnNotifier} from "../types/ReturnNotifier";
+import {Scope} from "../types/Scope";
 
 export class Interpreter {
-  public variables: Map<string, Variable> = new Map<string, Variable>()
-  public functions: Map<string, Func> = new Map<string, Func>()
   public program: IProgram
+  public globalScope: Scope
+  public localScope: Scope
 
   constructor(program: IProgram) {
     this.program = program
+    this.globalScope = new Scope()
+    this.localScope = this.globalScope
 
-    this.functions.set("println", new Println())
+    this.globalScope.functions.set("println", new Println())
   }
 
   public run() {
@@ -64,11 +67,29 @@ export class Interpreter {
           // 呼び出し元に return で指定した statement を返す.
           return this.expression(statement.body)
         }
+      } else if (statement instanceof FAssignOperatorExpression) {
+        this.var(statement)
       } else {
         this.expression(statement)
       }
     }
     return null
+  }
+
+  public var(expression: FAssignOperatorExpression) {
+    const name = expression.left.name
+    if (!this.localScope.variables.has(name)) {
+      this.defineNewVariableToLocal(name)
+      this.expression(expression)
+    }
+  }
+
+  public defineNewVariableToLocal(name: string) {
+    const variable = new Variable(
+      name, 0
+    )
+    this.localScope.variables.set(name, variable)
+    return variable
   }
 
   public expression(expression: any): any {
@@ -111,10 +132,10 @@ export class Interpreter {
 
   public dynamicFunc(expression: FDynamicFunction) {
     const name = expression.id.name
-    if (this.functions.has(name)) {
+    if (this.localScope.functions.has(name)) {
       throw new Error("関数名はすでに使用されています.")
     }
-    if (this.variables.has(name)) {
+    if (this.localScope.variables.has(name)) {
       throw new Error("関数名が変数名と重複しています.")
     }
     if (expression.args.filter((val, i, arr) => {
@@ -123,17 +144,11 @@ export class Interpreter {
       // 仮引数に重複があった場合
       throw new Error("仮引数に重複があります.")
     }
-    // 仮引数がすでに使用されている場合
-    expression.args.forEach((arg) => {
-      if (this.variables.has(arg.name)) {
-        throw new Error(`仮引数がすでに変数として定義されています. (name: ${arg.name}`)
-      }
-    })
 
     const func = new DynamicFunction(
-      name, this, expression.args, expression.body
+      name, this, expression.args, expression.body, this.globalScope, this.localScope
     )
-    this.functions.set(name, func)
+    this.localScope.functions.set(name, func)
   }
 
   public invoke(expression: FFunctionCallExpression) {
@@ -159,15 +174,18 @@ export class Interpreter {
 
   public varOrFunc(arg: IIdentifier): any {
     const name = arg.name
-    if (this.variables.has(name)) {
-      return this.variables.get(name)!
-    } else if (this.functions.has(name)) {
-      return this.functions.get(name)!
-    } else {
-      const variable = new Variable(name, 0)
-      this.variables.set(name, variable)
-      return variable
+    // スコープを順番に親方向に辿ってすでに関数・変数が定義されていないかを確認
+    let searchingScope: Scope | null = this.localScope
+    while (searchingScope != null) {
+      if (searchingScope.functions.has(name)) {
+        return searchingScope.functions.get(name)!
+      }
+      if (searchingScope.variables.has(name)) {
+        return searchingScope.variables.get(name)!
+      }
+      searchingScope = searchingScope.parent
     }
+    return this.defineNewVariableToLocal(name)
   }
 
   public variable(maybeVariable: any): Variable {
