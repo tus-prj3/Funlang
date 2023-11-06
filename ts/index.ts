@@ -13,6 +13,7 @@ import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
 import { ConsoleStore } from "./store/ConsoleStore";
 import {IfOuterBlock} from "./block/condition/IfOuterBlock";
 import {IfElseOuterBlock} from "./block/condition/IfElseOuterBlock";
+import {ClosureOuterBlock} from "./block/function/ClosureOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -21,6 +22,7 @@ const mainButton = document.getElementById('main')
 const comparisonButton = document.getElementById('comparison')
 const logicalButton = document.getElementById('logical')
 const functionButton = document.getElementById('function')
+const closureButton = document.getElementById('closure')
 const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
 const assignButton = document.getElementById('assign')
@@ -77,6 +79,12 @@ mainButton!.onclick = (_) => {
 comparisonButton!.onclick = (_) => {
   blockStore.blocks.push(
     new ComparisonOuterBlock()
+  )
+}
+
+closureButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new ClosureOuterBlock()
   )
 }
 
