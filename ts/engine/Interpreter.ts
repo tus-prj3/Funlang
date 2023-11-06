@@ -17,8 +17,8 @@ import {
   FFunctionCallExpression,
   FIdentifier, FIfElseStatement, FIfStatement,
   FIntLiteral,
+  FOperatorExpression, FRecFunction,
   FLogicalExpression,
-  FOperatorExpression,
   FReturnStatement
 } from "../expression/FNode";
 import {DynamicFunction, Func, Println} from "../expression/entities/Function";
@@ -105,11 +105,11 @@ export class Interpreter {
       return this.invoke(expression)
     } else if (expression instanceof FComparisonExpression) {
       return this.compare(expression)
+    } else if (expression instanceof FDynamicFunction || expression instanceof FRecFunction) {
+      return this.dynamicFunc(expression)
     } else if (expression instanceof FLogicalExpression) {
       return this.logic(expression)
-    }else if (expression instanceof FDynamicFunction) {
-      return this.dynamicFunc(expression)
-    } 
+    }
   }
 
   public condition(expression: FIfStatement | FIfElseStatement, returnNotifier: ReturnNotifier): any {
@@ -130,7 +130,7 @@ export class Interpreter {
     return this.compare(expression)
   }
 
-  public dynamicFunc(expression: FDynamicFunction) {
+  public dynamicFunc(expression: FDynamicFunction | FRecFunction) {
     const name = expression.id.name
     if (this.localScope.functions.has(name)) {
       throw new Error("関数名はすでに使用されています.")
@@ -146,7 +146,7 @@ export class Interpreter {
     }
 
     const func = new DynamicFunction(
-      name, this, expression.args, expression.body, this.globalScope, this.localScope
+      name, this, expression.args, expression.body, this.globalScope, this.localScope, expression instanceof FRecFunction
     )
     this.localScope.functions.set(name, func)
     return func
@@ -206,7 +206,7 @@ export class Interpreter {
       return value
     } else if (typeof value === 'boolean') {
       return value
-    }else if (value instanceof Variable) {
+    } else if (value instanceof Variable) {
       return value.value
     } else {
       throw new Error("right value should be instances of number, boolean, function, FVariable!")

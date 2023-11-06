@@ -12,11 +12,11 @@ export class FunctionCallOuterBlock extends OuterBlock {
 
   constructor(functionName: string, shouldHaveArgs: boolean) {
     super(
-      new Vec2(100, 100), 125, shouldHaveArgs ? 100 : 50,
+      new Vec2(100, 100), 150, shouldHaveArgs ? 100 : 50,
       `${functionName}_${blockStore.blocks.length}`,
       shouldHaveArgs ? [
         new BlockPosition(
-          25, 25, 100, 50
+          50, 25, 100, 50
         )
       ] : []
     );

@@ -27,8 +27,10 @@ export class DynamicFunction extends Func {
   block: IStatement[]
   globalScope: Scope
   localScope: Scope
+  reclusive: boolean
 
-  constructor(name: string, ctx: Interpreter, params: IIdentifier[], block: IStatement[], globalScope: Scope, localScope: Scope) {
+  constructor(name: string, ctx: Interpreter, params: IIdentifier[], block: IStatement[],
+              globalScope: Scope, localScope: Scope, reclusive: boolean) {
     super();
     this.name = name
     this.context = ctx
@@ -36,12 +38,19 @@ export class DynamicFunction extends Func {
     this.block = block
     this.globalScope = globalScope
     this.localScope = localScope
+    this.reclusive = reclusive
   }
 
   invoke(args: any[]): any {
     // 関数の呼び出しをする前に, 現在の LocalScope を親とする新しい Scope を作成する
     const parentScope = this.context.localScope
     this.context.localScope = new Scope()
+    // 再帰関数の場合は, 環境に関数自分自身を入れておく
+    if (this.reclusive) {
+      this.context.localScope.functions.set(
+        this.name, this
+      )
+    }
     this.context.localScope.parent = parentScope
     for (let i = 0; i < this.params.length; i++) {
       const param = this.params[i]
