@@ -201,14 +201,14 @@ export class Interpreter {
   }
 
   public value(value: any): any {
-    if (typeof value === 'number') {
+    if (typeof value === 'number' || typeof value === 'boolean') {
       return value
     } else if (typeof value === 'boolean') {
       return value
     }else if (value instanceof Variable) {
       return value.value
     } else {
-      throw new Error("right value should be instances of FIntLiteral, FVariable!")
+      throw new Error("right value should be instances of number, boolean, FVariable!")
     }
   }
 
