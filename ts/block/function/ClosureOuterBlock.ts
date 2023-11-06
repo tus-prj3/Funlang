@@ -5,32 +5,21 @@ import {OuterBlock} from "../base/OuterBlock";
 import {IStatement} from "../../expression/interface/INode";
 import {FDynamicFunction} from "../../expression/FNode";
 import {FUNCTION} from "../../types/Color";
-import {VariableBlock} from "../VariableBlock";
 import {FunctionCallOuterBlock} from "./FunctionCallOuterBlock";
 
-export class FunctionOuterBlock extends OuterBlock {
-  functionName: string
+export class ClosureOuterBlock extends OuterBlock {
+  closureName: string
 
-  constructor(functionName: string = `function_${blockStore.blocks.length}`) {
+  constructor(closureName: string = `closure_${blockStore.blocks.length}`) {
     super(
-      new Vec2(100, 100), 150, 200,
-      `function_${blockStore.blocks.length}`,
+      new Vec2(100, 100), 150, 125,
+      `closure_${blockStore.blocks.length}`,
       [
         new BlockPosition(50, 50, 100, 50),
-        new BlockPosition(50, 125, 100, 50)
       ]
     );
     this.element.style.background = FUNCTION
-    this.functionName = functionName
-
-    const inputText = document.createElement('span')
-    inputText.innerText = "with variables:"
-    inputText.style.fontSize = '12px'
-    inputText.style.fontWeight = 'bold'
-    inputText.style.position = 'absolute'
-    inputText.style.color = 'white'
-    inputText.style.top = '30px'
-    inputText.style.left = '5px'
+    this.closureName = closureName
 
     const doText = document.createElement('span')
     doText.innerText = 'do'
@@ -38,7 +27,7 @@ export class FunctionOuterBlock extends OuterBlock {
     doText.style.fontWeight = 'bold'
     doText.style.position = 'absolute'
     doText.style.color = 'white'
-    doText.style.top = '80px'
+    doText.style.top = '40px'
     doText.style.left = '5px'
 
     const generateButton = document.createElement('button')
@@ -48,25 +37,25 @@ export class FunctionOuterBlock extends OuterBlock {
     generateButton.innerText = '生成'
     generateButton.style.fontSize = '10px'
 
-    const func = document.createElement('span')
-    func.innerText = '[func]'
-    func.style.fontSize = '12px'
-    func.style.fontWeight = 'bold'
-    func.style.position = 'absolute'
-    func.style.color = 'white'
-    func.style.top = '5px'
-    func.style.left = '5px'
+    const closure = document.createElement('span')
+    closure.innerText = '[closure]'
+    closure.style.fontSize = '12px'
+    closure.style.fontWeight = 'bold'
+    closure.style.position = 'absolute'
+    closure.style.color = 'white'
+    closure.style.top = '5px'
+    closure.style.left = '5px'
 
     const nameInput = document.createElement('input')
-    nameInput.value = functionName
+    nameInput.value = closureName
     nameInput.style.position = 'absolute'
-    nameInput.style.left = '50px'
+    nameInput.style.left = '65px'
     nameInput.style.width = '75px'
     nameInput.style.top = '5px'
 
     generateButton.onclick = () => {
       blockStore.blocks.push(
-        new FunctionCallOuterBlock(this.functionName, true)
+        new FunctionCallOuterBlock(this.closureName, false)
       )
     }
     nameInput.onchange = (event) => {
@@ -74,13 +63,12 @@ export class FunctionOuterBlock extends OuterBlock {
       if (!(target instanceof HTMLInputElement)) {
         return
       }
-      this.functionName = target.value
+      this.closureName = target.value
     }
 
-    this.element.appendChild(inputText)
     this.element.appendChild(doText)
     this.element.appendChild(generateButton)
-    this.element.appendChild(func)
+    this.element.appendChild(closure)
     this.element.appendChild(nameInput)
   }
 
@@ -91,8 +79,8 @@ export class FunctionOuterBlock extends OuterBlock {
   getExpression(): IStatement {
     const children = Array.from(this.children.values())
     return new FDynamicFunction(
-      this.functionName, children[0][0].connectedNextBlocks().map((block) => (block as VariableBlock).getExpression()),
-      children[1].map((block) => block.getExpression())
+      this.closureName, [],
+      children[0].map((block) => block.getExpression())
     )
   }
 }
