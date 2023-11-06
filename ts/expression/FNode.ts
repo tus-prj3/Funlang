@@ -129,6 +129,12 @@ export class FDynamicFunction implements IDynamicFunction {
   }
 }
 
+export class FRecFunction extends FDynamicFunction {
+  constructor(id: string, args: IIdentifier[], body: IStatement[]) {
+    super(id, args, body)
+  }
+}
+
 export class FReturnStatement implements IReturnStatement {
   body: IExpression
   type: string = "ReturnExpression"

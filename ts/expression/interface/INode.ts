@@ -42,6 +42,8 @@ export interface IDynamicFunction extends INode {
   body: IStatement[]
 }
 
+export interface IRecFunction extends IDynamicFunction {}
+
 export interface IReturnStatement extends IStatement {
   body: IExpression
 }
