@@ -1,3 +1,4 @@
+
 import {Direction} from "../../types/Direction";
 import {Vec2} from "../../types/Vec2";
 import {getRandomColor} from "../../types/Color";
@@ -45,17 +46,24 @@ export abstract class Block implements IBlockPosition {
     this.parent = null
     this.parentBlockPosition = null
 
+    const workspace = document.getElementById('workspace');
     this.element = document.createElement("div")
+    this.element.setAttribute('data-identifier', identifier);
     this.element.style.left = pos.getX + "px"
     this.element.style.top = pos.getY + "px"
     this.element.style.width = width + "px"
     this.element.style.height = height + "px"
     this.element.className = appendClass
+    this.element.oncontextmenu = this.onContextMenu
 
     this.element.style.background = getRandomColor()
 
     this.element.onmousedown = this.onMouseDown
-    document.getElementById('workspace')?.appendChild(this.element)
+
+
+
+    this.element = document.createElement("div");
+    workspace?.appendChild(this.element); // 親要素内にブロック要素を追加
   }
 
   /** 指定された方向の辺の中央の座標を返します */
@@ -250,6 +258,11 @@ export abstract class Block implements IBlockPosition {
     document.addEventListener('mouseup', this.onMouseUp)
   }
 
+  private onContextMenu = (e: MouseEvent) => {
+    e.preventDefault()
+    // this.deleteBlock(this.identifier)
+  }
+
   protected onMouseMove = (event: MouseEvent) => {
     this.connectedNextBlocks().forEach((block) => {
       const blockX = block.dragStartBlockX + (event.x - block.dragStartCursorX)
@@ -320,4 +333,17 @@ export abstract class Block implements IBlockPosition {
   }
 
   public abstract getExpression(): IStatement
+
+
+  public deleteBlock(identifier: string) {
+
+    this.element.remove();
+
+    const index = blockStore.blocks.indexOf(this);
+    if (index !== -1) {
+      blockStore.blocks.splice(index, 1);
+    }
+  }
+
+
 }

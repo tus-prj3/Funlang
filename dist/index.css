@@ -26,3 +26,15 @@ html, body {
 #workspace {
   position: relative;
 }
+
+
+#customArea {
+  width: 100vw; /* 画面幅いっぱいに広げる */
+  height: 100vh; /* 画面高さいっぱいに広げる */
+  position: absolute;
+  top: 0;
+  left: 50%; /* カーソルの右側に表示するために調整 */
+  transform: translateX(-50%); /* 中央揃えに調整 */
+  background-color: transparent; /* 背景色を透明に設定 */
+}
+

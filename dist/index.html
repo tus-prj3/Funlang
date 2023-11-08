@@ -1,18 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
   <title>Funlang</title>
   <link rel="stylesheet" href="index.css">
+
+
+  <style>
+    #contextmenu {
+      display: none;
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      width: 200px;
+      height: 100px;
+      border: 1px solid #000;
+      background-color: #fff;
+    }
+
+    #contextmenu li {
+      cursor: pointer;
+    }
+  </style>
+
+
+
+
+
+  <script>
+    window.onload = function () {
+      document.body.addEventListener('contextmenu', function (e) {
+      //e.preventDefault(); // デフォルトのコンテキストメニューを非表示にする
+
+      // 右クリックされた要素を取得
+      const targetElement = e.target;
+
+      // ブロックの `identifier` 属性を取得
+      if (targetElement && targetElement.getAttribute('data-identifier')) {
+        const blockIdentifier = targetElement.getAttribute('data-identifier');
+        alert("右クリックされたブロックの identifier は: " + blockIdentifier);
+      }
+    });
+
+      document.body.addEventListener('contextmenu', function (e) {
+        document.getElementById('contextmenu').style.left = e.pageX + "px";
+        document.getElementById('contextmenu').style.top = e.pageY + "px";
+        document.getElementById('contextmenu').style.display = "block";
+      });
+      document.body.addEventListener('click', function (e) {
+        document.getElementById('contextmenu').style.display = "none";
+      });
+    }
+
+
+
+    
+    function menu1() {
+      alert("menu1がクリックされました。");
+    }
+    function menu2() {
+      alert("menu2がクリックされました。");
+    }
+    function menu3() {
+      alert("menu3がクリックされました。");
+    }
+  </script>
+
+
 </head>
+
+<body onContextmenu="return false;"></body>
+
 <body>
-<button id="generate">generate</button>
-<button id="log">log</button>
-<button id="outer">outer</button>
-<button id="main">main</button>
-<script src="index.js"></script>
-<div id="workspace">
-</div>
+
+
+  <button id="generate">generate</button>
+  <button id="log">log</button>
+  <button id="outer">outer</button>
+  <button id="main">main</button>
+  <button id="conditions">conditions</button>
+  <button id="loop">loop</button>
+  <button id="deleteAll">deleteAll</button>
+  <script src="index.js"></script>
+  <div id="workspace">
+
+    <div id="contextmenu">
+      <ul>
+        <li onClick="menu1()">menu1</li>
+        <li onClick="menu2()">menu2</li>
+        <li onClick="menu3()">menu3</li>
+      </ul>
+    </div>
+
+
+
 </body>
+
 </html>
