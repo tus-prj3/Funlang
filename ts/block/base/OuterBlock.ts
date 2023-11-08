@@ -3,6 +3,7 @@ import {Block} from "./internal";
 import {Vec2} from "../../types/Vec2";
 import {getMinimumDistBlock} from "../../store/BlockStore";
 import {BlockPosition, IBlockPosition} from "../../interface/IBlockPosition";
+import {blockStore} from "../../index";
 
 export abstract class OuterBlock extends Block {
   public readonly childrenPositions: Map<IBlockPosition, HTMLElement> = new Map<IBlockPosition, HTMLElement>()
@@ -134,5 +135,24 @@ export abstract class OuterBlock extends Block {
   public removeHighlightChildren() {
     Array.from(this.childrenPositions.values())
       .forEach((elem) => elem.style.border = '')
+  }
+
+  public deleteBlock(identifier: string) {
+    // 1. 自身の要素を削除
+    this.element.remove();
+
+    // 2. ブロックストアから自身を削除
+    const index = blockStore.blocks.indexOf(this);
+    if (index !== -1) {
+      blockStore.blocks.splice(index, 1);
+    }
+
+    // 3. 子ブロックを再帰的に削除
+    this.children.forEach((blocks) => {
+        blocks.forEach((block) => {
+          block.deleteBlock(block.identifier);
+        });
+      }
+    )
   }
 }
