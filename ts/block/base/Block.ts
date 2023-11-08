@@ -1,3 +1,4 @@
+
 import {Direction} from "../../types/Direction";
 import {Vec2} from "../../types/Vec2";
 import {getRandomColor} from "../../types/Color";
@@ -51,6 +52,7 @@ export abstract class Block implements IBlockPosition {
     this.element.style.width = width + "px"
     this.element.style.height = height + "px"
     this.element.className = appendClass
+    this.element.oncontextmenu = this.onContextMenu
 
     this.element.style.background = getRandomColor()
 
@@ -250,6 +252,11 @@ export abstract class Block implements IBlockPosition {
     document.addEventListener('mouseup', this.onMouseUp)
   }
 
+  private onContextMenu = (e: MouseEvent) => {
+    e.preventDefault()
+    this.deleteBlock(this.identifier)
+  }
+
   protected onMouseMove = (event: MouseEvent) => {
     this.connectedNextBlocks().forEach((block) => {
       const blockX = block.dragStartBlockX + (event.x - block.dragStartCursorX)
@@ -320,4 +327,16 @@ export abstract class Block implements IBlockPosition {
   }
 
   public abstract getExpression(): IStatement
+
+  public deleteBlock(identifier: string) {
+    this.element.remove();
+  
+    // 2. ブロックストアから自身を削除
+    const index = blockStore.blocks.indexOf(this);
+    if (index !== -1) {
+      blockStore.blocks.splice(index, 1);
+    }
+  }
+
+
 }

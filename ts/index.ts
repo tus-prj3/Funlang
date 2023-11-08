@@ -12,6 +12,7 @@ const generateButton = document.getElementById('generate')
 const logButton = document.getElementById('log')
 const outerButton = document.getElementById('outer')
 const mainButton = document.getElementById('main')
+const deleteButton = document.getElementById('deleteAll');
 
 export const blockStore = new BlockStore()
 
@@ -52,4 +53,22 @@ mainButton!.onclick = (_) => {
     new VariableBlock("x"),
     new OperatorOuterBlock()
   )
+}
+
+if (deleteButton) {
+  deleteButton.onclick = () => {
+    console.log(blockStore.blocks)
+    console.log("deleteAll")
+    const workspace = document.getElementById('workspace');
+    if (workspace) {
+      // ワークスペース内のすべての子要素（ブロック）を削除
+      while (workspace.firstChild) {
+        workspace.removeChild(workspace.firstChild);
+      }
+      // ブロックストアのブロックも削除
+      blockStore.blocks = [];
+    }
+    console.log(blockStore.blocks)
+    console.log(" ")
+  }
 }
