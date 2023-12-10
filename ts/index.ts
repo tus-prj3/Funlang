@@ -6,7 +6,7 @@ import {AssignOuterBlock} from "./block/AssignOuterBlock";
 import {VariableBlock} from "./block/VariableBlock";
 import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
 import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
-import {ComparisonOuterBrock} from "./block/ComparisonOuterBrock";
+import {ComparisonOuterBlock} from "./block/ComparisonOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
 
@@ -69,7 +69,7 @@ mainButton!.onclick = (_) => {
 
 comparisonButton!.onclick = (_) => {
   blockStore.blocks.push(
-    new ComparisonOuterBrock()
+    new ComparisonOuterBlock()
   )
 }
 
