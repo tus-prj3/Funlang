@@ -152,7 +152,9 @@ export class Interpreter {
   public value(value: any): any {
     if (typeof value === 'number') {
       return value
-    } else if (value instanceof Variable) {
+    } else if (typeof value === 'boolean') {
+      return value
+    }else if (value instanceof Variable) {
       return value.value
     } else {
       throw new Error("right value should be instances of FIntLiteral, FVariable!")

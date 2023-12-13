@@ -7,6 +7,7 @@ import {BlockPosition} from "../../interface/IBlockPosition";
 import {VariableBlock} from "../VariableBlock";
 import {NumberBlock} from "../NumberBlock";
 import {OperatorOuterBlock} from "../OperatorOuterBlock";
+import { ComparisonOuterBlock } from "../ComparisonOuterBlock";
 import {FUNCTION} from "../../types/Color";
 
 export class PrintFunctionOuterBlock extends OuterBlock {
@@ -43,6 +44,7 @@ export class PrintFunctionOuterBlock extends OuterBlock {
     return children[0][0] instanceof VariableBlock
       || children[0][0] instanceof NumberBlock
       || children[0][0] instanceof OperatorOuterBlock
+     || children[0][0] instanceof ComparisonOuterBlock
   }
 
   getExpression(): IStatement {
