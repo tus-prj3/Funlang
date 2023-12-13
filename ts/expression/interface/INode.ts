@@ -66,6 +66,16 @@ export enum ComparisonOperator {
   "EQ", "NE", "LT", "GT", "LE", "GE"
 }
 
+export interface ILogicalExpression extends IExpression {
+  type: string
+  logical: LogicalOperator
+  left: IExpression
+  right: IExpression
+}
+export enum LogicalOperator {
+  "AND", "OR"
+}
+
 export interface IAssignOperatorExpression extends IExpression {
   type: string // "AssignOperatorExpression"
   operator: AssignOperator

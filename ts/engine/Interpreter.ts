@@ -3,9 +3,11 @@ import {
   IAssignOperatorExpression,
   IComparisonExpression,
   IIdentifier,
+  ILogicalExpression,
   IOperatorExpression,
   IProgram,
   IStatement,
+  LogicalOperator,
   Operator
 } from "../expression/interface/INode";
 import {
@@ -15,6 +17,7 @@ import {
   FFunctionCallExpression,
   FIdentifier,
   FIntLiteral,
+  FLogicalExpression,
   FOperatorExpression,
   FReturnStatement
 } from "../expression/FNode";
@@ -71,9 +74,11 @@ export class Interpreter {
       return this.invoke(expression)
     } else if (expression instanceof FComparisonExpression) {
       return this.compare(expression)
-    } else if (expression instanceof FDynamicFunction) {
+    } else if (expression instanceof FLogicalExpression) {
+      return this.logic(expression)
+    }else if (expression instanceof FDynamicFunction) {
       return this.dynamicFunc(expression)
-    }
+    } 
   }
 
   public dynamicFunc(expression: FDynamicFunction) {
@@ -192,6 +197,17 @@ export class Interpreter {
         return left <= right
       case ComparisonOperator.GE:
         return left >= right
+    }
+  }
+
+  public logic(logicalExpression: ILogicalExpression): boolean {
+    const left = this.expression(logicalExpression.left)
+    const right = this.expression(logicalExpression.right)
+    switch (logicalExpression.logical) {
+      case LogicalOperator.AND:
+        return left && right
+      case LogicalOperator.OR:
+        return left || right
     }
   }
 }

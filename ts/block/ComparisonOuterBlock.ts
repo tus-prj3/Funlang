@@ -5,13 +5,13 @@ import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
 import {FComparisonExpression} from "../expression/FNode";
 import {NumberBlock} from "./NumberBlock";
-import {OPERATOR} from "../types/Color";
+import {COMPARISON} from "../types/Color";
 
 export class ComparisonOuterBlock extends OuterBlock {
     op: HTMLSelectElement
 
     constructor() {
-        super(new Vec2(100, 100), 325, 110, `comparison_${blockStore.blocks.length}`, [
+        super(new Vec2(100, 100), 325, 110, `operator_${blockStore.blocks.length}`, [
             new BlockPosition(25, 25, 100, 50),
             new BlockPosition(200, 25, 100, 50)
         ]);
@@ -53,7 +53,7 @@ export class ComparisonOuterBlock extends OuterBlock {
         this.element.appendChild(letText)
         this.element.appendChild(this.op)
 
-        this.element.style.background = OPERATOR
+        this.element.style.background = COMPARISON
     }
 
     validate(): boolean{

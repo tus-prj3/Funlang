@@ -7,6 +7,7 @@ import {VariableBlock} from "./block/VariableBlock";
 import {OperatorOuterBlock} from "./block/OperatorOuterBlock";
 import {FunctionOuterBlock} from "./block/function/FunctionOuterBlock";
 import {ComparisonOuterBlock} from "./block/ComparisonOuterBlock";
+import { LogicalOuterBlock } from "./block/LogicalOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
 
@@ -15,6 +16,7 @@ const logButton = document.getElementById('log')
 const operatorButton = document.getElementById('operator')
 const mainButton = document.getElementById('main')
 const comparisonButton = document.getElementById('comparison')
+const logicalButton = document.getElementById('logical')
 const functionButton = document.getElementById('function')
 const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
@@ -73,6 +75,11 @@ comparisonButton!.onclick = (_) => {
   )
 }
 
+logicalButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new LogicalOuterBlock()
+  )
+}
 functionButton!.onclick = (_) => {
   blockStore.blocks.push(
     new FunctionOuterBlock()
