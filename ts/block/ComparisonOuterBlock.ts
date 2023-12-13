@@ -7,13 +7,13 @@ import {FComparisonExpression} from "../expression/FNode";
 import {NumberBlock} from "./NumberBlock";
 import {OPERATOR} from "../types/Color";
 
-export class ComparisonOuterBrock extends OuterBlock {
+export class ComparisonOuterBlock extends OuterBlock {
     op: HTMLSelectElement
 
     constructor() {
-        super(new Vec2(100, 100), 125, 175, `comparison_${blockStore.blocks.length}`, [
+        super(new Vec2(100, 100), 325, 110, `comparison_${blockStore.blocks.length}`, [
             new BlockPosition(25, 25, 100, 50),
-            new BlockPosition(25, 100, 100, 50)
+            new BlockPosition(200, 25, 100, 50)
         ]);
 
         const letText = document.createElement('span')
@@ -47,8 +47,8 @@ export class ComparisonOuterBrock extends OuterBlock {
         this.op.style.fontSize = '12px'
         this.op.style.fontWeight = 'bold'
         this.op.style.position = 'absolute'
-        this.op.style.top = '80px'
-        this.op.style.left = '5px'
+        this.op.style.top = '45px'
+        this.op.style.left = '145px'
 
         this.element.appendChild(letText)
         this.element.appendChild(this.op)
