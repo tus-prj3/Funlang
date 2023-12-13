@@ -7,9 +7,10 @@ import {
   IExpression,
   IFunction,
   IIdentifier, IIntLiteral,
+  ILogicalExpression,
   IOperatorExpression,
   IProgram, IReturnStatement,
-  IStatement, IVariable, Operator
+  IStatement, IVariable, LogicalOperator, Operator
 } from "./interface/INode";
 import {Interpreter} from "../engine/Interpreter";
 
@@ -83,6 +84,19 @@ export class FComparisonExpression implements IComparisonExpression {
 
   constructor(comparsion: ComparisonOperator, left: IExpression, right: IExpression) {
     this.comparison = comparsion
+    this.left = left
+    this.right = right
+  }
+}
+
+export class FLogicalExpression implements ILogicalExpression {
+  left: IExpression
+  logical: LogicalOperator
+  right: IExpression
+  type: string = "ComparisonExpression"
+
+  constructor(logical: LogicalOperator, left: IExpression, right: IExpression) {
+    this.logical = logical
     this.left = left
     this.right = right
   }

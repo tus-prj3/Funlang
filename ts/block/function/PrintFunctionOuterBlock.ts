@@ -9,6 +9,7 @@ import {NumberBlock} from "../NumberBlock";
 import {OperatorOuterBlock} from "../OperatorOuterBlock";
 import { ComparisonOuterBlock } from "../ComparisonOuterBlock";
 import {FUNCTION} from "../../types/Color";
+import { LogicalOuterBlock } from "../LogicalOuterBlock";
 
 export class PrintFunctionOuterBlock extends OuterBlock {
   constructor() {
@@ -44,7 +45,8 @@ export class PrintFunctionOuterBlock extends OuterBlock {
     return children[0][0] instanceof VariableBlock
       || children[0][0] instanceof NumberBlock
       || children[0][0] instanceof OperatorOuterBlock
-     || children[0][0] instanceof ComparisonOuterBlock
+      || children[0][0] instanceof ComparisonOuterBlock
+      || children[0][0] instanceof LogicalOuterBlock
   }
 
   getExpression(): IStatement {
