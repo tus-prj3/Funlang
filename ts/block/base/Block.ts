@@ -5,14 +5,14 @@ import {blockStore} from "../../index";
 import {BlockPosition, IBlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "./internal";
 import {getMinimumDistBlock} from "../../store/BlockStore";
-import {INode, IStatement} from "../../expression/interface/INode";
+import {IExpression, IStatement} from "../../expression/interface/INode";
 
 export abstract class Block implements IBlockPosition {
   public x: number
   public y: number
   public width: number
   public height: number
-  public readonly initialHeight: number
+  public initialHeight: number
   public readonly initialWidth: number
   public readonly identifier: string
 
@@ -51,6 +51,7 @@ export abstract class Block implements IBlockPosition {
     this.element.style.width = width + "px"
     this.element.style.height = height + "px"
     this.element.className = appendClass
+    this.element.oncontextmenu = this.onContextMenu
 
     this.element.style.background = getRandomColor()
 
@@ -133,7 +134,7 @@ export abstract class Block implements IBlockPosition {
 
   public canConnect(targetBlock: Block) {
     const side = this.calcDirection(targetBlock.center())
-    return side === Direction.DOWN && targetBlock.center().distance(this.center()) <= 200
+    return side === Direction.DOWN && this.middlePoint(Direction.DOWN).distance(targetBlock.middlePoint(Direction.UP)) <= 50
   }
 
   private highlightSide() {
@@ -223,10 +224,46 @@ export abstract class Block implements IBlockPosition {
 
       const connectedBlocks = this.connectedNextBlocks()
       const childrenBlocks = this.parent.children.get(this.parentBlockPosition!)!
-      console.info(this.parentBlockPosition)
       this.parent.children.set(this.parentBlockPosition!, childrenBlocks.filter((block) => !connectedBlocks.includes(block)))
 
-      this.parent.recalculateHeight()
+      // 接続場所を特定するためのフラグ
+      let flag: boolean = false
+      const prevConnectedOuterBlock = this.parent
+      const prevConnectedPosition = this.parentBlockPosition!
+      // 縮める長さ
+      const dh = this.connectedNextBlocks().map((block) => block.height).reduce((s, t) => s + t) - prevConnectedPosition.height
+      const blockPositions = Array.from(prevConnectedOuterBlock.childrenPositions.keys())
+      for (let i = 0; i < prevConnectedOuterBlock.childrenPositions.size; i++) {
+        // 接続場所以降の接続できる場所をずらす
+        if (flag) {
+          const prevBlockPosition = blockPositions[i]
+          const prevHTMLElement = prevConnectedOuterBlock.childrenPositions.get(prevBlockPosition)!
+          prevHTMLElement.style.top = parseInt(prevHTMLElement.style.top.split('px')[0]) - dh + 'px'
+          const prevChildren = prevConnectedOuterBlock.children.get(prevBlockPosition)!
+          const newBlockPosition = new BlockPosition(
+            prevBlockPosition.x, prevBlockPosition.y - dh, prevBlockPosition.width, prevBlockPosition.height
+          )
+
+          prevConnectedOuterBlock.childrenPositions.delete(prevBlockPosition)
+          prevConnectedOuterBlock.childrenPositions.set(newBlockPosition, prevHTMLElement)
+
+          if (prevConnectedOuterBlock.children.has(prevBlockPosition)) {
+            prevConnectedOuterBlock.children.delete(prevBlockPosition)
+            prevConnectedOuterBlock.children.set(newBlockPosition, prevChildren)
+          }
+        }
+        if (blockPositions[i] === prevConnectedPosition) {
+          flag = true
+        }
+      }
+
+      const dheight = this.parent.recalculateHeight()
+      const nextBlocks = this.parent.connectedNextBlocks().filter((block) => block !== this.parent)
+      nextBlocks.forEach((block) => {
+        block.setPosition(
+          new Vec2(block.x, block.y + dheight)
+        )
+      })
 
       connectedBlocks.forEach((block) => {
         const nextAbsolutePos = block.element.getBoundingClientRect()
@@ -248,6 +285,11 @@ export abstract class Block implements IBlockPosition {
 
     document.addEventListener('mousemove', this.onMouseMove)
     document.addEventListener('mouseup', this.onMouseUp)
+  }
+
+  private onContextMenu = (e: MouseEvent) => {
+    e.preventDefault()
+    this.deleteBlock(this.identifier)
   }
 
   protected onMouseMove = (event: MouseEvent) => {
@@ -315,9 +357,17 @@ export abstract class Block implements IBlockPosition {
     return new BlockPosition(this.x - anotherBlock.x, this.y - anotherBlock.y, this.width, this.height)
   }
 
-  public validate(): boolean {
-    return true
-  }
+  public abstract validate(): boolean
 
-  public abstract getExpression(): IStatement
+  public abstract getExpression(): IExpression
+
+  public deleteBlock(identifier: string) {
+    this.element.remove();
+
+    // 2. ブロックストアから自身を削除
+    const index = blockStore.blocks.indexOf(this);
+    if (index !== -1) {
+      blockStore.blocks.splice(index, 1);
+    }
+  }
 }

@@ -18,4 +18,8 @@ export class SimpleOuterBlock extends OuterBlock {
   getExpression(): IExpression {
     return new FBlockStatement(this.getChildrenExpression())
   }
+
+  validate(): boolean {
+    return true;
+  }
 }

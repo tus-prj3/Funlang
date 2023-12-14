@@ -3,8 +3,9 @@ import {INode, Operator} from "../expression/interface/INode";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
-import {FExpressionStatement, FIntLiteral, FOperatorExpression, FProgram} from "../expression/FNode";
+import {FOperatorExpression} from "../expression/FNode";
 import {NumberBlock} from "./NumberBlock";
+import {OPERATOR} from "../types/Color";
 
 export class OperatorOuterBlock extends OuterBlock {
   op: HTMLSelectElement
@@ -45,10 +46,16 @@ export class OperatorOuterBlock extends OuterBlock {
 
     this.element.appendChild(letText)
     this.element.appendChild(this.op)
+
+    this.element.style.background = OPERATOR
   }
 
   validate(): boolean {
-    return true
+    const children = Array.from(this.children.values())
+    if (children.length != 2) {
+      return false
+    }
+    return (children[0][0] instanceof NumberBlock) && (children[1][0] instanceof NumberBlock)
   }
 
   getExpression(): INode {

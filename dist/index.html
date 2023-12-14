@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
@@ -7,13 +7,27 @@
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<h2>プロジェクト課題</h2>
-<button id="generate">generate</button>
-<button id="log">log</button>
-<button id="outer">outer</button>
-<button id="main">main</button>
+<div id="buttonArea">
+  <button id="number">number</button>
+  <button id="log">run</button>
+  <button id="operator">operator</button>
+  <button id="main">main</button>
+  <button id="comparison">comparison</button>
+  <button id="logical">logical</button>
+  <button id="function">function</button>
+  <button id="variable">variable</button>
+  <button id="print">print</button>
+  <button id="assign">assign</button>
+  <button id="return">return</button>
+  <button id="clear">clear-console</button>
+  <button id="deleteAll">deleteAll</button>
+</div>
 <script src="index.js"></script>
-<div id="workspace">
+<div id="area">
+  <div id="workspace" style="overflow: scroll;"></div>
+  <div id="result">
+    <textarea readonly disabled id="result_text_area"></textarea>
+  </div>
 </div>
 </body>
 </html>

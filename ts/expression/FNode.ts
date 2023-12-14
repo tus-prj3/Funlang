@@ -1,14 +1,18 @@
 import {
   AssignOperator,
+  ComparisonOperator,
   IAssignOperatorExpression,
   IBlockStatement,
+  IComparisonExpression, IDynamicFunction,
   IExpression,
-  IExpressionStatement, IFunction, IFunctionBody,
+  IFunction,
   IIdentifier, IIntLiteral,
-  INode, IOperatorExpression,
-  IProgram,
-  IStatement, IVariable, Operator
+  ILogicalExpression,
+  IOperatorExpression,
+  IProgram, IReturnStatement,
+  IStatement, IVariable, LogicalOperator, Operator
 } from "./interface/INode";
+import {Interpreter} from "../engine/Interpreter";
 
 export class FProgram implements IProgram {
   type: string = "Program"
@@ -25,15 +29,6 @@ export class FBlockStatement implements IBlockStatement {
 
   constructor(body: IStatement[]) {
     this.body = body
-  }
-}
-
-export class FExpressionStatement implements IExpressionStatement {
-  type = "ExpressionStatement"
-  expression: IExpression
-
-  constructor(expression: IExpression) {
-    this.expression = expression
   }
 }
 
@@ -55,34 +50,16 @@ export class FIntLiteral implements IIntLiteral {
   }
 }
 
+/**
+ * ノードとしての変数の表現
+ * ※ Variable とは異なることに注意
+ */
 export class FVariable implements IVariable {
   type: string = "Variable"
-  id: string
+  id: IIdentifier
 
   constructor(id: string) {
-    this.id = id
-  }
-}
-
-export class FFunction implements IFunction {
-  id: string
-  params: IIdentifier[] | null
-  type = "Function"
-  body: IFunctionBody
-
-  constructor(id: string, params: IIdentifier[] | null, body: IFunctionBody) {
-    this.id = id
-    this.params = params
-    this.body = body
-  }
-}
-
-export class FFunctionBody implements IFunctionBody {
-  body: IStatement[];
-  type: string = "FunctionBody"
-
-  constructor(body: IStatement[]) {
-    this.body = body
+    this.id = new FIdentifier(id)
   }
 }
 
@@ -99,15 +76,78 @@ export class FOperatorExpression implements IOperatorExpression {
   }
 }
 
+export class FComparisonExpression implements IComparisonExpression {
+  left: IExpression
+  comparison: ComparisonOperator
+  right: IExpression
+  type: string = "ComparisonExpression"
+
+  constructor(comparsion: ComparisonOperator, left: IExpression, right: IExpression) {
+    this.comparison = comparsion
+    this.left = left
+    this.right = right
+  }
+}
+
+export class FLogicalExpression implements ILogicalExpression {
+  left: IExpression
+  logical: LogicalOperator
+  right: IExpression
+  type: string = "ComparisonExpression"
+
+  constructor(logical: LogicalOperator, left: IExpression, right: IExpression) {
+    this.logical = logical
+    this.left = left
+    this.right = right
+  }
+}
+
 export class FAssignOperatorExpression implements IAssignOperatorExpression {
-  left: IVariable
+  left: IIdentifier
   operator: AssignOperator
   right: IExpression
   type: string = "AssignOperatorExpression"
 
-  constructor(operator: AssignOperator, left: IVariable, right: IExpression) {
+  constructor(operator: AssignOperator, left: IIdentifier, right: IExpression) {
     this.operator = operator
     this.left = left
     this.right = right
+  }
+}
+
+/**
+ * ノードとしての関数の呼び出しの表現
+ * ※ Func とは異なることに注意
+ */
+export class FFunctionCallExpression implements IFunction {
+  id: IIdentifier;
+  type: string = "Function"
+  args: IExpression[]
+
+  constructor(id: string, arg: IExpression[]) {
+    this.id = new FIdentifier(id)
+    this.args = arg
+  }
+}
+
+export class FDynamicFunction implements IDynamicFunction {
+  id: IIdentifier
+  type: string = "Function"
+  args: IIdentifier[]
+  body: IStatement[]
+
+  constructor(id: string, args: IIdentifier[], body: IStatement[]) {
+    this.id = new FIdentifier(id)
+    this.args = args
+    this.body = body
+  }
+}
+
+export class FReturnStatement implements IReturnStatement {
+  body: IExpression
+  type: string = "ReturnExpression"
+
+  constructor(body: IExpression) {
+    this.body = body
   }
 }

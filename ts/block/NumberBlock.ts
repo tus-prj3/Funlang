@@ -2,7 +2,7 @@ import {Block} from "./base/Block";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {IExpression, INode, IStatement} from "../expression/interface/INode";
-import {FExpressionStatement, FIntLiteral} from "../expression/FNode";
+import {FIntLiteral} from "../expression/FNode";
 
 export class NumberBlock extends Block {
   private number: number
@@ -54,5 +54,9 @@ export class NumberBlock extends Block {
 
   public override getExpression(): IExpression {
     return new FIntLiteral(this.number)
+  }
+
+  public validate(): boolean {
+    return true
   }
 }
