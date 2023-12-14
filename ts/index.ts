@@ -10,6 +10,7 @@ import {ComparisonOuterBlock} from "./block/ComparisonOuterBlock";
 import { LogicalOuterBlock } from "./block/LogicalOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
+import { ConsoleStore } from "./store/ConsoleStore";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -23,6 +24,7 @@ const printButton = document.getElementById('print')
 const assignButton = document.getElementById('assign')
 const returnButton = document.getElementById('return')
 const deleteButton = document.getElementById('deleteAll');
+const clearButton = document.getElementById('clear')
 
 export const blockStore = new BlockStore()
 
@@ -110,20 +112,24 @@ returnButton!.onclick = (_) => {
   )
 }
 
-if (deleteButton) {
-  deleteButton.onclick = () => {
-    console.log(blockStore.blocks)
-    console.log("deleteAll")
-    const workspace = document.getElementById('workspace');
-    if (workspace) {
-      // ワークスペース内のすべての子要素（ブロック）を削除
-      while (workspace.firstChild) {
-        workspace.removeChild(workspace.firstChild);
-      }
-      // ブロックストアのブロックも削除
-      blockStore.blocks = [];
+deleteButton!.onclick = (_) => {
+  console.log(blockStore.blocks)
+  console.log("deleteAll")
+  const workspace = document.getElementById('workspace');
+  if (workspace) {
+    // ワークスペース内のすべての子要素（ブロック）を削除
+    while (workspace.firstChild) {
+      workspace.removeChild(workspace.firstChild);
     }
-    console.log(blockStore.blocks)
-    console.log(" ")
+    // ブロックストアのブロックも削除
+    blockStore.blocks = [];
   }
+  console.log(blockStore.blocks)
+  console.log(" ")
+}
+
+clearButton!.onclick = (_) => {
+  const console = document.getElementById('result_text_area')! as HTMLTextAreaElement
+  console.value = ''
+  ConsoleStore.outputCount = 0
 }
