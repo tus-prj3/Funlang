@@ -23,8 +23,9 @@ const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
 const assignButton = document.getElementById('assign')
 const returnButton = document.getElementById('return')
-const deleteButton = document.getElementById('deleteAll');
+const deleteButton = document.getElementById('deleteAll')
 const clearButton = document.getElementById('clear')
+const customMenu = document.getElementById('customMenu')
 
 export const blockStore = new BlockStore()
 
@@ -115,7 +116,7 @@ returnButton!.onclick = (_) => {
 deleteButton!.onclick = (_) => {
   console.log(blockStore.blocks)
   console.log("deleteAll")
-  const workspace = document.getElementById('workspace');
+  const workspace = document.getElementById('workspace')
   if (workspace) {
     // ワークスペース内のすべての子要素（ブロック）を削除
     while (workspace.firstChild) {

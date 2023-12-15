@@ -30,6 +30,9 @@ export abstract class Block implements IBlockPosition {
   private dragStartCursorX: number = 0
   private dragStartCursorY: number = 0
 
+  private customMenu: HTMLElement | null
+  private deleteOne: HTMLElement | null
+
   constructor(pos: Vec2, width: number, height: number, identifier: string, appendClass: string = 'block_without_color') {
     this.x = pos.getX
     this.y = pos.getY
@@ -57,6 +60,9 @@ export abstract class Block implements IBlockPosition {
 
     this.element.onmousedown = this.onMouseDown
     document.getElementById('workspace')?.appendChild(this.element)
+
+    this.customMenu = document.getElementById("customMenu")
+    this.deleteOne = document.getElementById("delete")
   }
 
   /** 指定された方向の辺の中央の座標を返します */
@@ -289,7 +295,27 @@ export abstract class Block implements IBlockPosition {
 
   private onContextMenu = (e: MouseEvent) => {
     e.preventDefault()
-    this.deleteBlock(this.identifier)
+    if(this.customMenu) {
+      this.customMenu.style.left = `${e.pageX}px`
+      this.customMenu.style.top = `${e.pageY}px`
+
+      this.customMenu.style.display = 'block';
+
+      if (this.deleteOne) {
+        this.deleteOne.addEventListener('click', () => {
+          this.deleteBlock(this.identifier)
+          if (this.customMenu)this.customMenu.style.display = 'none'
+        })
+      }
+
+      const workspace = document.getElementById('workspace') as HTMLElement
+      workspace.addEventListener('click', (_) => {
+        if (this.customMenu) {
+          console.log('clear menu')
+          this.customMenu.style.display = 'none'
+        }
+      })
+    }
   }
 
   protected onMouseMove = (event: MouseEvent) => {
