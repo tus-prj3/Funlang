@@ -9,6 +9,8 @@
   position: absolute;
   cursor: move;
   box-sizing: border-box;
+  border: solid 0px;
+  border-radius: 4px;
 }
 
 .block_child_notify {
@@ -55,14 +57,27 @@ html, body {
 
 #customMenu {
   display: none;
-  position: fixed;
+  position: absolute;
   left: 0px;
   top: 0px;
-  width: 200px;
-  height: 100px;
+}
+#customMenu ul {
+  width: 150px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  overflow: auto;
+  padding-left: 0;
   border: 1px solid #000;
+  border-radius: 2px;
   background-color: #fff;
 }
 #customMenu li {
+  display: block;
+  text-align: center;
   cursor: pointer;
+  list-style: none;
+}
+#customMenu li:hover {
+  background-color: #1b2538;
+  color: #fff;
 }
