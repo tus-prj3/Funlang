@@ -22,7 +22,7 @@ export class ClosureOuterBlock extends OuterBlock {
     this.closureName = closureName
 
     const doText = document.createElement('span')
-    doText.innerText = 'do'
+    doText.innerText = '作用'
     doText.style.fontSize = '12px'
     doText.style.fontWeight = 'bold'
     doText.style.position = 'absolute'
@@ -38,7 +38,7 @@ export class ClosureOuterBlock extends OuterBlock {
     generateButton.style.fontSize = '10px'
 
     const closure = document.createElement('span')
-    closure.innerText = '[closure]'
+    closure.innerText = '関数閉包'
     closure.style.fontSize = '12px'
     closure.style.fontWeight = 'bold'
     closure.style.position = 'absolute'
