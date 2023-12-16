@@ -19,7 +19,7 @@ export class ReturnOuterBlock extends OuterBlock {
     );
 
     const printText = document.createElement('span')
-    printText.innerText = "戻り値"
+    printText.innerText = "[return]"
     printText.style.color = 'white'
     printText.style.fontSize = '12px'
     printText.style.fontWeight = 'bold'

@@ -24,7 +24,7 @@ export class RecFunctionOuterBlock extends OuterBlock {
     this.functionName = functionName
 
     const inputText = document.createElement('span')
-    inputText.innerText = "変数は:"
+    inputText.innerText = "with variables:"
     inputText.style.fontSize = '12px'
     inputText.style.fontWeight = 'bold'
     inputText.style.position = 'absolute'
@@ -49,7 +49,7 @@ export class RecFunctionOuterBlock extends OuterBlock {
     generateButton.style.fontSize = '10px'
 
     const func = document.createElement('span')
-    func.innerText = '再帰関数'
+    func.innerText = '[rec func]'
     func.style.fontSize = '12px'
     func.style.fontWeight = 'bold'
     func.style.position = 'absolute'
