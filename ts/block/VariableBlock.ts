@@ -30,7 +30,7 @@ export class VariableBlock extends Block {
     this.element.style.color = 'white'
 
     const typeText = document.createElement('span')
-    typeText.innerText = "[var]"
+    typeText.innerText = "変数"
     typeText.style.fontSize = '10px'
     typeText.style.fontWeight = 'bold'
     typeText.style.position = 'absolute'

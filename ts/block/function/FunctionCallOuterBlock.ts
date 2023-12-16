@@ -22,7 +22,7 @@ export class FunctionCallOuterBlock extends OuterBlock {
     this.functionName = functionName
 
     const printText = document.createElement('span')
-    printText.innerText = `[call ${functionName}]`
+    printText.innerText = `${functionName}を呼び出し`
     printText.style.color = 'white'
     printText.style.fontSize = '12px'
     printText.style.fontWeight = 'bold'

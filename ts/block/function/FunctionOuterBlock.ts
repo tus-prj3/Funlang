@@ -24,7 +24,7 @@ export class FunctionOuterBlock extends OuterBlock {
     this.functionName = functionName
 
     const inputText = document.createElement('span')
-    inputText.innerText = "with variables:"
+    inputText.innerText = "変数:"
     inputText.style.fontSize = '12px'
     inputText.style.fontWeight = 'bold'
     inputText.style.position = 'absolute'
@@ -33,7 +33,7 @@ export class FunctionOuterBlock extends OuterBlock {
     inputText.style.left = '5px'
 
     const doText = document.createElement('span')
-    doText.innerText = 'do'
+    doText.innerText = '作用'
     doText.style.fontSize = '12px'
     doText.style.fontWeight = 'bold'
     doText.style.position = 'absolute'
@@ -49,7 +49,7 @@ export class FunctionOuterBlock extends OuterBlock {
     generateButton.style.fontSize = '10px'
 
     const func = document.createElement('span')
-    func.innerText = '[func]'
+    func.innerText = '関数'
     func.style.fontSize = '12px'
     func.style.fontWeight = 'bold'
     func.style.position = 'absolute'
