@@ -17,7 +17,7 @@ export class LogicalOuterBlock extends OuterBlock {
         ]);
 
         const letText = document.createElement('span')
-        letText.innerText = "[logical]"
+        letText.innerText = "論理演算"
         letText.style.color = 'white'
         letText.style.fontSize = '12px'
         letText.style.fontWeight = 'bold'
