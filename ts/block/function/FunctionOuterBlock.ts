@@ -24,7 +24,7 @@ export class FunctionOuterBlock extends OuterBlock {
     this.functionName = functionName
 
     const inputText = document.createElement('span')
-    inputText.innerText = "with variables:"
+    inputText.innerText = "変数は:"
     inputText.style.fontSize = '12px'
     inputText.style.fontWeight = 'bold'
     inputText.style.position = 'absolute'

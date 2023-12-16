@@ -17,7 +17,7 @@ export class AssignOuterBlock extends OuterBlock {
     ]);
 
     const letText = document.createElement('span')
-    letText.innerText = "[assign]"
+    letText.innerText = "等式"
     letText.style.fontSize = '12px'
     letText.style.fontWeight = 'bold'
     letText.style.position = 'absolute'
