@@ -3,21 +3,21 @@ import {blockStore} from "../../index";
 import {BlockPosition} from "../../interface/IBlockPosition";
 import {OuterBlock} from "../base/OuterBlock";
 import {IStatement} from "../../expression/interface/INode";
-import {FDynamicFunction} from "../../expression/FNode";
+import {FRecFunction} from "../../expression/FNode";
 import {FUNCTION} from "../../types/Color";
 import {VariableBlock} from "../VariableBlock";
 import {FunctionCallOuterBlock} from "./FunctionCallOuterBlock";
 
-export class FunctionOuterBlock extends OuterBlock {
+export class RecFunctionOuterBlock extends OuterBlock {
   functionName: string
 
-  constructor(functionName: string = `function_${blockStore.blocks.length}`) {
+  constructor(functionName: string = `rec_function_${blockStore.blocks.length}`) {
     super(
-      new Vec2(100, 100), 150, 200,
-      `function_${blockStore.blocks.length}`,
+      new Vec2(100, 100), 175, 200,
+      `rec_function_${blockStore.blocks.length}`,
       [
-        new BlockPosition(50, 50, 100, 50),
-        new BlockPosition(50, 125, 100, 50)
+        new BlockPosition(75, 50, 100, 50),
+        new BlockPosition(75, 125, 100, 50)
       ]
     );
     this.element.style.background = FUNCTION
@@ -44,12 +44,12 @@ export class FunctionOuterBlock extends OuterBlock {
     const generateButton = document.createElement('button')
     generateButton.style.position = 'absolute'
     generateButton.style.top = '27.5px'
-    generateButton.style.left = '110px'
+    generateButton.style.left = '135px'
     generateButton.innerText = '生成'
     generateButton.style.fontSize = '10px'
 
     const func = document.createElement('span')
-    func.innerText = '[func]'
+    func.innerText = '[rec func]'
     func.style.fontSize = '12px'
     func.style.fontWeight = 'bold'
     func.style.position = 'absolute'
@@ -60,8 +60,8 @@ export class FunctionOuterBlock extends OuterBlock {
     const nameInput = document.createElement('input')
     nameInput.value = functionName
     nameInput.style.position = 'absolute'
-    nameInput.style.left = '50px'
-    nameInput.style.width = '75px'
+    nameInput.style.left = '70px'
+    nameInput.style.width = '95px'
     nameInput.style.top = '5px'
 
     generateButton.onclick = () => {
@@ -90,7 +90,7 @@ export class FunctionOuterBlock extends OuterBlock {
 
   getExpression(): IStatement {
     const children = Array.from(this.children.values())
-    return new FDynamicFunction(
+    return new FRecFunction(
       this.functionName, children[0][0].connectedNextBlocks().map((block) => (block as VariableBlock).getExpression()),
       children[1].map((block) => block.getExpression())
     )

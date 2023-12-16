@@ -8,18 +8,20 @@ import {FFunctionCallExpression} from "../../expression/FNode";
 
 export class FunctionCallOuterBlock extends OuterBlock {
   functionName: string
+  shouldHaveArgs: boolean
 
-  constructor(functionName: string) {
+  constructor(functionName: string, shouldHaveArgs: boolean) {
     super(
-      new Vec2(100, 100), 125, 100,
+      new Vec2(100, 100), 150, shouldHaveArgs ? 100 : 50,
       `${functionName}_${blockStore.blocks.length}`,
-      [
+      shouldHaveArgs ? [
         new BlockPosition(
-          25, 25, 100, 50
+          50, 25, 100, 50
         )
-      ]
+      ] : []
     );
     this.functionName = functionName
+    this.shouldHaveArgs = shouldHaveArgs
 
     const printText = document.createElement('span')
     printText.innerText = `[call ${functionName}]`
@@ -42,7 +44,7 @@ export class FunctionCallOuterBlock extends OuterBlock {
   getExpression(): IStatement {
     const children = Array.from(this.children.values())
     return new FFunctionCallExpression(
-      this.functionName, children[0][0].connectedNextBlocks().map((block) => block.getExpression())
+      this.functionName, this.shouldHaveArgs ? children[0][0].connectedNextBlocks().map((block) => block.getExpression()) : []
     )
   }
 }

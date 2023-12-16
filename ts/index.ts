@@ -11,6 +11,10 @@ import { LogicalOuterBlock } from "./block/LogicalOuterBlock";
 import {PrintFunctionOuterBlock} from "./block/function/PrintFunctionOuterBlock";
 import {ReturnOuterBlock} from "./block/function/ReturnOuterBlock";
 import { ConsoleStore } from "./store/ConsoleStore";
+import {IfOuterBlock} from "./block/condition/IfOuterBlock";
+import {IfElseOuterBlock} from "./block/condition/IfElseOuterBlock";
+import {ClosureOuterBlock} from "./block/function/ClosureOuterBlock";
+import {RecFunctionOuterBlock} from "./block/function/RecFunctionOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -19,11 +23,15 @@ const mainButton = document.getElementById('main')
 const comparisonButton = document.getElementById('comparison')
 const logicalButton = document.getElementById('logical')
 const functionButton = document.getElementById('function')
+const recFunctionButton = document.getElementById('rec-function')
+const closureButton = document.getElementById('closure')
 const variableButton = document.getElementById('variable')
 const printButton = document.getElementById('print')
 const assignButton = document.getElementById('assign')
 const returnButton = document.getElementById('return')
-const deleteButton = document.getElementById('deleteAll')
+const ifButton = document.getElementById('if')
+const ifElseButton = document.getElementById('if-else')
+const deleteButton = document.getElementById('deleteAll');
 const clearButton = document.getElementById('clear')
 const customMenu = document.getElementById('customMenu')
 
@@ -48,8 +56,6 @@ logButton!.onclick = (_) => {
 
   const interpreter = new Interpreter(blockStore.getAst())
   interpreter.run()
-  console.info(interpreter.variables)
-  console.info(interpreter.functions)
 }
 
 operatorButton!.onclick = (_) => {
@@ -75,6 +81,12 @@ mainButton!.onclick = (_) => {
 comparisonButton!.onclick = (_) => {
   blockStore.blocks.push(
     new ComparisonOuterBlock()
+  )
+}
+
+closureButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new ClosureOuterBlock()
   )
 }
 
@@ -110,6 +122,24 @@ assignButton!.onclick = (_) => {
 returnButton!.onclick = (_) => {
   blockStore.blocks.push(
     new ReturnOuterBlock()
+  )
+}
+
+ifButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new IfOuterBlock()
+  )
+}
+
+ifElseButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new IfElseOuterBlock()
+  )
+}
+
+recFunctionButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new RecFunctionOuterBlock()
   )
 }
 

@@ -6,13 +6,12 @@ import {
   IComparisonExpression, IDynamicFunction,
   IExpression,
   IFunction,
-  IIdentifier, IIntLiteral,
+  IIdentifier, IIfElseStatement, IIfStatement, IIntLiteral,
   ILogicalExpression,
   IOperatorExpression,
   IProgram, IReturnStatement,
   IStatement, IVariable, LogicalOperator, Operator
 } from "./interface/INode";
-import {Interpreter} from "../engine/Interpreter";
 
 export class FProgram implements IProgram {
   type: string = "Program"
@@ -47,19 +46,6 @@ export class FIntLiteral implements IIntLiteral {
 
   constructor(value: number) {
     this.value = value
-  }
-}
-
-/**
- * ノードとしての変数の表現
- * ※ Variable とは異なることに注意
- */
-export class FVariable implements IVariable {
-  type: string = "Variable"
-  id: IIdentifier
-
-  constructor(id: string) {
-    this.id = new FIdentifier(id)
   }
 }
 
@@ -143,11 +129,41 @@ export class FDynamicFunction implements IDynamicFunction {
   }
 }
 
+export class FRecFunction extends FDynamicFunction {
+  constructor(id: string, args: IIdentifier[], body: IStatement[]) {
+    super(id, args, body)
+  }
+}
+
 export class FReturnStatement implements IReturnStatement {
   body: IExpression
   type: string = "ReturnExpression"
 
   constructor(body: IExpression) {
     this.body = body
+  }
+}
+
+export class FIfStatement implements IIfStatement {
+  blockOfThen: IStatement[];
+  condition: IComparisonExpression;
+  type: string = "IfStatement"
+
+  constructor(condition: IComparisonExpression, blockOfThen: IStatement[]) {
+    this.blockOfThen = blockOfThen
+    this.condition = condition
+  }
+}
+
+export class FIfElseStatement implements IIfElseStatement {
+  blockOfThen: IStatement[];
+  blockOfElse: IStatement[];
+  condition: IComparisonExpression;
+  type: string = "IfElseStatement"
+
+  constructor(condition: IComparisonExpression, blockOfThen: IStatement[], blockOfElse: IStatement[]) {
+    this.blockOfThen = blockOfThen
+    this.condition = condition
+    this.blockOfElse = blockOfElse
   }
 }
