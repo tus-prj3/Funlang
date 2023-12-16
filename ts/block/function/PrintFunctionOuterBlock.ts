@@ -24,7 +24,7 @@ export class PrintFunctionOuterBlock extends OuterBlock {
     );
 
     const printText = document.createElement('span')
-    printText.innerText = "表示"
+    printText.innerText = "[print]"
     printText.style.color = 'white'
     printText.style.fontSize = '12px'
     printText.style.fontWeight = 'bold'

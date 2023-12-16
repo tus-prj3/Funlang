@@ -24,7 +24,7 @@ export class FunctionCallOuterBlock extends OuterBlock {
     this.shouldHaveArgs = shouldHaveArgs
 
     const printText = document.createElement('span')
-    printText.innerText = `${functionName}を呼び出す`
+    printText.innerText = `[call ${functionName}]`
     printText.style.color = 'white'
     printText.style.fontSize = '12px'
     printText.style.fontWeight = 'bold'

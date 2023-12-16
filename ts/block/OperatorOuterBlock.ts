@@ -17,7 +17,7 @@ export class OperatorOuterBlock extends OuterBlock {
     ]);
 
     const letText = document.createElement('span')
-    letText.innerText = "四則演算"
+    letText.innerText = "[op]"
     letText.style.color = 'white'
     letText.style.fontSize = '12px'
     letText.style.fontWeight = 'bold'
@@ -33,10 +33,10 @@ export class OperatorOuterBlock extends OuterBlock {
       new Option('-', 'minus'),
     )
     this.op.add(
-      new Option('÷', 'div'),
+      new Option('/', 'div'),
     )
     this.op.add(
-      new Option('×', 'multi')
+      new Option('*', 'multi')
     )
     this.op.style.fontSize = '12px'
     this.op.style.fontWeight = 'bold'

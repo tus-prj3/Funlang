@@ -17,7 +17,7 @@ export class ComparisonOuterBlock extends OuterBlock {
         ]);
 
         const letText = document.createElement('span')
-        letText.innerText = "比較"
+        letText.innerText = "[comparison]"
         letText.style.color = 'white'
         letText.style.fontSize = '12px'
         letText.style.fontWeight = 'bold'
