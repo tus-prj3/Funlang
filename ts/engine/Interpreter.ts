@@ -20,7 +20,8 @@ import {
   FOperatorExpression, FRecFunction,
   FLogicalExpression,
   FReturnStatement,
-  FWhileLoop
+  FWhileLoop,
+  FForLoop
 } from "../expression/FNode";
 import {DynamicFunction, Func, Println} from "../expression/entities/Function";
 import {Variable} from "../expression/entities/Variable";
@@ -62,7 +63,11 @@ export class Interpreter {
           this.body(statement.blockOfThen, returnNotifier)
           condition = this.isTrue(statement.condition)
         }
-      } else if (statement instanceof FReturnStatement) {
+      } else if (statement instanceof FForLoop){
+        for(let i=0; i<statement.value; i++){
+          this.body(statement.blockOfThen, returnNotifier)
+        }
+      }else if (statement instanceof FReturnStatement) {
         if (!returnNotifier.canReturnable) {
           throw new Error("ここで return を定義することはできません.")
         }

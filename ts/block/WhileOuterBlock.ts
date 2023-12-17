@@ -15,7 +15,7 @@ export class whileOuterBlock extends OuterBlock {
     ]);
 
     const ifText = document.createElement('span')
-    ifText.innerText = "[while]"
+    ifText.innerText = "ループ(条件)"
     ifText.style.fontSize = '12px'
     ifText.style.fontWeight = 'bold'
     ifText.style.position = 'absolute'

@@ -9,7 +9,7 @@ import {NumberBlock} from "./NumberBlock";
 import {OperatorOuterBlock} from "./OperatorOuterBlock";
 import {FUNCTION} from "../types/Color";
 
-export class LoopOuterBlock extends OuterBlock {
+export class ForOuterBlock extends OuterBlock {
 
   private id: number
   private readonly inputElement: HTMLInputElement //inputElement nani
@@ -27,7 +27,7 @@ export class LoopOuterBlock extends OuterBlock {
     this.id = id
 
     const printText = document.createElement('span')
-    printText.innerText = "[loop]"
+    printText.innerText = "ループ(回数)"
     printText.style.color = 'white'
     printText.style.fontSize = '12px'
     printText.style.fontWeight = 'bold'
@@ -40,13 +40,14 @@ export class LoopOuterBlock extends OuterBlock {
     this.element.style.background = FUNCTION
 
     this.inputElement = document.createElement('input')
-    this.inputElement.style.width = 50 + 'px'
+    this.inputElement.style.width = 30 + 'px'
     this.inputElement.style.borderRadius = '5px'
     this.inputElement.value = String(id)
 
     // 新しい位置に変更
     this.inputElement.style.position = 'absolute';
-    this.inputElement.style.left = '50px';  // 例: 80px 右に移動
+    this.inputElement.style.left = '80px';  // 例: 80px 右に移動
+    this.inputElement.style.top = '3px'
 
     this.inputElement.style.textAlign = 'center'
     this.inputElement.oninput = this.onChangeValue

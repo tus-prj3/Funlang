@@ -16,6 +16,7 @@ import {IfElseOuterBlock} from "./block/condition/IfElseOuterBlock";
 import {ClosureOuterBlock} from "./block/function/ClosureOuterBlock";
 import {RecFunctionOuterBlock} from "./block/function/RecFunctionOuterBlock";
 import { whileOuterBlock } from "./block/WhileOuterBlock";
+import { ForOuterBlock } from "./block/ForOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -36,6 +37,8 @@ const deleteButton = document.getElementById('deleteAll');
 const clearButton = document.getElementById('clear')
 const customMenu = document.getElementById('customMenu')
 const loopButton = document.getElementById('loop')
+const loop2Button = document.getElementById('loop2')
+
 
 export const blockStore = new BlockStore()
 
@@ -173,5 +176,11 @@ clearButton!.onclick = (_) => {
 loopButton!.onclick = (_) => {
   blockStore.blocks.push(
     new whileOuterBlock()
+  )
+}
+
+loop2Button!.onclick = (_) => {
+  blockStore.blocks.push(
+    new ForOuterBlock(2)
   )
 }
