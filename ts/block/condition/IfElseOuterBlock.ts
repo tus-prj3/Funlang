@@ -5,7 +5,7 @@ import {blockStore} from "../../index";
 import {BlockPosition} from "../../interface/IBlockPosition";
 import {LOGIC} from "../../types/Color";
 import {FIfElseStatement} from "../../expression/FNode";
-import {ComparisonOuterBrock} from "../ComparisonOuterBrock";
+import {ComparisonOuterBlock} from "../ComparisonOuterBlock";
 
 export class IfElseOuterBlock extends OuterBlock {
   constructor() {
@@ -57,7 +57,7 @@ export class IfElseOuterBlock extends OuterBlock {
   getExpression(): IExpression {
     const children = Array.from(this.children.values())
     return new FIfElseStatement(
-      (children[0][0] as ComparisonOuterBrock).getExpression(),
+      (children[0][0] as ComparisonOuterBlock).getExpression(),
       children[1][0].connectedNextBlocks().map((block) => block.getExpression()),
       children[2][0].connectedNextBlocks().map((block) => block.getExpression())
     )

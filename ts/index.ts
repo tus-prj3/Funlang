@@ -19,7 +19,7 @@ import {RecFunctionOuterBlock} from "./block/function/RecFunctionOuterBlock";
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
 const operatorButton = document.getElementById('operator')
-const mainButton = document.getElementById('main')
+//const mainButton = document.getElementById('main')
 const comparisonButton = document.getElementById('comparison')
 const logicalButton = document.getElementById('logical')
 const functionButton = document.getElementById('function')
@@ -64,21 +64,24 @@ operatorButton!.onclick = (_) => {
   )
 }
 
+/*
 mainButton!.onclick = (_) => {
   blockStore.blocks.push(
-    /*new MainOuterBlock(
+    new MainOuterBlock(
       `main_${blockStore.blocks.length}`,
       [
         new BlockPosition(25, 25, 100, 50)
       ]
-    )*/
+    )
     new AssignOuterBlock(),
     new VariableBlock("x"),
     new OperatorOuterBlock()
   )
 }
+*/
 
 comparisonButton!.onclick = (_) => {
+  console.log('Comparison')
   blockStore.blocks.push(
     new ComparisonOuterBlock()
   )
