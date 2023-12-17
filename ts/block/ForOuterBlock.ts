@@ -77,7 +77,7 @@ export class ForOuterBlock extends OuterBlock {
   getExpression(): IExpression {
     const children = Array.from(this.children.values())
     return new FForLoop(
-      children[1][0].connectedNextBlocks().map((block) => block.getExpression()),this.id
+      children[0][0].connectedNextBlocks().map((block) => block.getExpression()),this.id
     )
   }
 }
