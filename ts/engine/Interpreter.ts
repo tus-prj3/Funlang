@@ -177,7 +177,6 @@ export class Interpreter {
   public assign(assignExpression: IAssignOperatorExpression): Variable {
     const variable = this.variable(this.expression(assignExpression.left))
     variable.value = this.value(this.expression(assignExpression.right))
-    console.info(variable)
     return variable
   }
 
