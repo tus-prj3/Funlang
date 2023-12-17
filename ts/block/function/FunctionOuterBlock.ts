@@ -49,7 +49,7 @@ export class FunctionOuterBlock extends OuterBlock {
     generateButton.style.fontSize = '10px'
 
     const func = document.createElement('span')
-    func.innerText = '[func]'
+    func.innerText = '関数'
     func.style.fontSize = '12px'
     func.style.fontWeight = 'bold'
     func.style.position = 'absolute'
