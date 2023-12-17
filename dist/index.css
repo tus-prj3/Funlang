@@ -56,8 +56,7 @@ html, body {
 
 #workspace {
   position: relative;
-  width: 1300px;
-  height: 1000px; 
+  width: 100%;
   margin: 8px;
   border: 2px solid black;
   overflow: auto;
@@ -65,8 +64,8 @@ html, body {
 
 #buttonArea {
   position: relative;
-  width: 300px;
-  height: 1000px; 
+  width: 1000px;
+  height: 200px; 
   margin: 8px;
   border: 2px solid black;
   overflow: auto;
