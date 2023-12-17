@@ -98,3 +98,8 @@ export interface IAssignOperatorExpression extends IExpression {
 export enum AssignOperator {
   "ASSIGN"
 }
+
+export interface ILoop extends INode {
+  id: IIdentifier
+  args: IExpression[]
+}

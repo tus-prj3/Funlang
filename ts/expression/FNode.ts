@@ -11,6 +11,7 @@ import {
   IOperatorExpression,
   IProgram, IReturnStatement,
   IStatement, IVariable, LogicalOperator, Operator
+  
 } from "./interface/INode";
 
 export class FProgram implements IProgram {
@@ -165,5 +166,16 @@ export class FIfElseStatement implements IIfElseStatement {
     this.blockOfThen = blockOfThen
     this.condition = condition
     this.blockOfElse = blockOfElse
+  }
+}
+
+export class FWhileLoop {
+  blockOfThen: IStatement[];
+  condition: IComparisonExpression;
+  type: string = "WhileLoop"
+
+  constructor(condition: IComparisonExpression, blockOfThen: IStatement[]) {
+    this.blockOfThen = blockOfThen
+    this.condition = condition
   }
 }

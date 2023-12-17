@@ -8,7 +8,8 @@ import {
   IProgram,
   IStatement,
   LogicalOperator,
-  Operator
+  Operator,
+  ILoop
 } from "../expression/interface/INode";
 import {
   FAssignOperatorExpression,
@@ -19,7 +20,8 @@ import {
   FIntLiteral,
   FOperatorExpression, FRecFunction,
   FLogicalExpression,
-  FReturnStatement
+  FReturnStatement,
+  FWhileLoop
 } from "../expression/FNode";
 import {DynamicFunction, Func, Println} from "../expression/entities/Function";
 import {Variable} from "../expression/entities/Variable";
@@ -43,7 +45,7 @@ export class Interpreter {
     this.body(this.program.body, new ReturnNotifier())
   }
 
-  public body(body: IStatement[], returnNotifier: ReturnNotifier) {
+  public body(body: IStatement[], returnNotifier: ReturnNotifier): any {
     for (let statement of body) {
       if (statement instanceof FIfStatement) {
         const returnValue = this.condition(statement, returnNotifier)
@@ -55,6 +57,14 @@ export class Interpreter {
         if (returnNotifier.shouldNotifyReturnToCalledFrom) {
           return returnValue
         }
+      } else if (statement instanceof FWhileLoop){
+        let condition = this.isTrue(statement.condition) //条件式がtrueかfalseか判断して格納
+        let returnValue = null
+        while(condition == true){
+          returnValue = this.body(statement.blockOfThen, returnNotifier)
+          condition = this.isTrue(statement.condition)
+        }
+        return returnValue
       } else if (statement instanceof FReturnStatement) {
         if (!returnNotifier.canReturnable) {
           throw new Error("ここで return を定義することはできません.")
@@ -257,4 +267,5 @@ export class Interpreter {
         return left || right
     }
   }
+
 }
