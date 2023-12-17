@@ -322,7 +322,7 @@ html, body {
 
 #customMenu {
   display: none;
-  position: fixed;
+  position: absolute;
   left: 0px;
   top: 0px;
 }
