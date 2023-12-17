@@ -8,8 +8,7 @@ import {
   IProgram,
   IStatement,
   LogicalOperator,
-  Operator,
-  ILoop
+  Operator
 } from "../expression/interface/INode";
 import {
   FAssignOperatorExpression,
@@ -59,12 +58,10 @@ export class Interpreter {
         }
       } else if (statement instanceof FWhileLoop){
         let condition = this.isTrue(statement.condition) //条件式がtrueかfalseか判断して格納
-        let returnValue = null
         while(condition == true){
-          returnValue = this.body(statement.blockOfThen, returnNotifier)
+          this.body(statement.blockOfThen, returnNotifier)
           condition = this.isTrue(statement.condition)
         }
-        return returnValue
       } else if (statement instanceof FReturnStatement) {
         if (!returnNotifier.canReturnable) {
           throw new Error("ここで return を定義することはできません.")
@@ -90,8 +87,8 @@ export class Interpreter {
     const name = expression.left.name
     if (!this.localScope.variables.has(name)) {
       this.defineNewVariableToLocal(name)
-      this.expression(expression)
     }
+    this.expression(expression)
   }
 
   public defineNewVariableToLocal(name: string) {
@@ -180,6 +177,7 @@ export class Interpreter {
   public assign(assignExpression: IAssignOperatorExpression): Variable {
     const variable = this.variable(this.expression(assignExpression.left))
     variable.value = this.value(this.expression(assignExpression.right))
+    console.info(variable)
     return variable
   }
 
