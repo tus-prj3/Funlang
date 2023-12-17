@@ -10,7 +10,7 @@ import {
   ILogicalExpression,
   IOperatorExpression,
   IProgram, IReturnStatement,
-  IStatement, IVariable, LogicalOperator, Operator
+  IStatement, IVariable, LogicalOperator, Operator,
 } from "./interface/INode";
 
 export class FProgram implements IProgram {
@@ -165,5 +165,28 @@ export class FIfElseStatement implements IIfElseStatement {
     this.blockOfThen = blockOfThen
     this.condition = condition
     this.blockOfElse = blockOfElse
+  }
+}
+
+export class FWhileLoop {
+  blockOfThen: IStatement[]
+  condition: IComparisonExpression;
+  type: string = "WhileLoop"
+
+  constructor(condition: IComparisonExpression, blockOfThen: IStatement[]) {
+    this.blockOfThen = blockOfThen
+    this.condition = condition
+  }
+}
+
+export class FForLoop{
+  blockOfThen: IStatement[]
+  value: number
+  type: string = "ForLoop"
+
+
+  constructor(blockOfThen: IStatement[], value: number) {
+    this.blockOfThen = blockOfThen
+    this.value = value
   }
 }
