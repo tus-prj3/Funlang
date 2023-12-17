@@ -8,6 +8,8 @@ import {VariableBlock} from "./VariableBlock";
 import {NumberBlock} from "./NumberBlock";
 import {OperatorOuterBlock} from "./OperatorOuterBlock";
 import {FUNCTION} from "../types/Color";
+import {FForLoop} from "../expression/FNode";
+import {IExpression} from "../expression/interface/INode";
 
 export class ForOuterBlock extends OuterBlock {
 
@@ -72,8 +74,10 @@ export class ForOuterBlock extends OuterBlock {
       || children[0][0] instanceof OperatorOuterBlock
   }
 
-  getExpression(): IStatement {
+  getExpression(): IExpression {
     const children = Array.from(this.children.values())
-    return new FFunctionCallExpression("println", children[0][0].connectedNextBlocks().map((block) => block.getExpression()))
+    return new FForLoop(
+      children[1][0].connectedNextBlocks().map((block) => block.getExpression()),this.id
+    )
   }
 }
