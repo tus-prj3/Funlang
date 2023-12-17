@@ -30,7 +30,7 @@ export class NumberBlock extends Block {
     this.element.style.color = 'white'
 
     const typeText = document.createElement('span')
-    typeText.innerText = "数字"
+    typeText.innerText = "整数"
     typeText.style.fontSize = '10px'
     typeText.style.fontWeight = 'bold'
     typeText.style.position = 'absolute'
