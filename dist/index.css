@@ -56,8 +56,7 @@ html, body {
 
 #workspace {
   position: relative;
-  width: 1300px;
-  height: 1000px; 
+  width: 100%; 
   margin: 8px;
   border: 2px solid black;
   overflow: auto;
@@ -65,8 +64,8 @@ html, body {
 
 #buttonArea {
   position: relative;
-  width: 300px;
-  height: 1000px; 
+  width: 980px;
+  height: 200px; 
   margin: 8px;
   border: 2px solid black;
   overflow: auto;
@@ -93,35 +92,6 @@ html, body {
   color: #3f474e;
   border-radius: 4px;
   background: rgb(255, 255, 100);
-  border-bottom: solid 5px gray;
- }
- .button_run:active {
-  -webkit-transform: translateY(5px);
-  transform: translateY(5px);
-  border-bottom: none;
-}
-
-.button_run {
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.5;
-  position: relative;
-  display: inline-block;
-  padding: 10px 20px; 
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  text-align: center;
-  vertical-align: middle;
-  text-decoration: none;
-  letter-spacing: 0.1em;
-  color: #3f474e;
-  border-radius: 4px;
-  background: yellow;
   border-bottom: solid 5px gray;
  }
  .button_run:active {
