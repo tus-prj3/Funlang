@@ -16,7 +16,7 @@ export class IfElseOuterBlock extends OuterBlock {
     ]);
 
     const ifText = document.createElement('span')
-    ifText.innerText = "条件"
+    ifText.innerText = "もし"
     ifText.style.fontSize = '12px'
     ifText.style.fontWeight = 'bold'
     ifText.style.position = 'absolute'
@@ -25,7 +25,7 @@ export class IfElseOuterBlock extends OuterBlock {
     ifText.style.left = '5px'
 
     const thenText = document.createElement('span')
-    thenText.innerText = "そのとき"
+    thenText.innerText = "ならば"
     thenText.style.fontSize = '12px'
     thenText.style.fontWeight = 'bold'
     thenText.style.position = 'absolute'
@@ -34,7 +34,7 @@ export class IfElseOuterBlock extends OuterBlock {
     thenText.style.left = '5px'
 
     const elseText = document.createElement('span')
-    elseText.innerText = "追加"
+    elseText.innerText = "そうでなければ"
     elseText.style.fontSize = '12px'
     elseText.style.fontWeight = 'bold'
     elseText.style.position = 'absolute'
