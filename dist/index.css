@@ -217,6 +217,64 @@ html, body {
   border-bottom: none;
 }
 
+.button_print {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px; 
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #3f474e;
+  border-radius: 4px;
+  background:rgb(255, 188, 246);
+  border-bottom: solid 5px gray;
+ }
+ .button_print:active {
+  -webkit-transform: translateY(5px);
+  transform: translateY(5px);
+  border-bottom: none;
+}
+
+.button_loop {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px; 
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #3f474e;
+  border-radius: 4px;
+  background:rgb(36, 207, 210);
+  border-bottom: solid 5px gray;
+ }
+ .button_loop:active {
+  -webkit-transform: translateY(5px);
+  transform: translateY(5px);
+  border-bottom: none;
+}
+
 .button_com {
   font-size: 1.6rem;
   font-weight: 700;
@@ -349,3 +407,4 @@ html, body {
   background-color: #1b2538;
   color: #fff;
 }
+
