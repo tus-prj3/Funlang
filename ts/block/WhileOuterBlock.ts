@@ -3,7 +3,7 @@ import {IExpression} from "../expression/interface/INode";
 import {Vec2} from "../types/Vec2";
 import {blockStore} from "../index";
 import {BlockPosition} from "../interface/IBlockPosition";
-import {LOGIC} from "../types/Color";
+import {LOOP} from "../types/Color";
 import {FWhileLoop} from "../expression/FNode";
 import {ComparisonOuterBlock} from "./ComparisonOuterBlock";
 
@@ -35,7 +35,7 @@ export class whileOuterBlock extends OuterBlock {
     this.element.appendChild(ifText)
     this.element.appendChild(thenText)
 
-    this.element.style.background = LOGIC
+    this.element.style.background = LOOP
   }
 
   validate(): boolean {

@@ -8,7 +8,7 @@ import {VariableBlock} from "../VariableBlock";
 import {NumberBlock} from "../NumberBlock";
 import {OperatorOuterBlock} from "../OperatorOuterBlock";
 import { ComparisonOuterBlock } from "../ComparisonOuterBlock";
-import {FUNCTION} from "../../types/Color";
+import {PRINT} from "../../types/Color";
 import { LogicalOuterBlock } from "../LogicalOuterBlock";
 
 export class PrintFunctionOuterBlock extends OuterBlock {
@@ -34,7 +34,7 @@ export class PrintFunctionOuterBlock extends OuterBlock {
 
     this.element.appendChild(printText)
 
-    this.element.style.background = FUNCTION
+    this.element.style.background = PRINT
   }
 
   validate(): boolean {
