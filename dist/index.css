@@ -54,24 +54,6 @@ html, body {
   margin: 0;
 }
 
-#workspace {
-  position: relative;
-  width: 100%;
-  margin: 8px;
-  border: 2px solid black;
-  overflow: auto;
-}
-
-#buttonArea {
-  position: relative;
-  width: 1000px;
-  height: 200px; 
-  margin: 8px;
-  border: 2px solid black;
-  overflow: auto;
-}
-
-.button_run {
 .link a{
   font-size: 1.6rem;
   font-weight: 700;
