@@ -7,7 +7,7 @@ import {BlockPosition} from "../interface/IBlockPosition";
 import {VariableBlock} from "./VariableBlock";
 import {NumberBlock} from "./NumberBlock";
 import {OperatorOuterBlock} from "./OperatorOuterBlock";
-import {FUNCTION} from "../types/Color";
+import {LOOP} from "../types/Color";
 import {FForLoop} from "../expression/FNode";
 import {IExpression} from "../expression/interface/INode";
 
@@ -39,7 +39,7 @@ export class ForOuterBlock extends OuterBlock {
 
     this.element.appendChild(printText)
 
-    this.element.style.background = FUNCTION
+    this.element.style.background = LOOP
 
     this.inputElement = document.createElement('input')
     this.inputElement.style.width = 30 + 'px'
