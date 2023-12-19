@@ -1,3 +1,4 @@
+import { Block } from "../base/Block";
 import {OuterBlock} from "../base/OuterBlock";
 import {IExpression} from "../../expression/interface/INode";
 import {Vec2} from "../../types/Vec2";
@@ -26,6 +27,7 @@ export class IfElseOuterBlock extends OuterBlock {
 
     const thenText = document.createElement('span')
     thenText.innerText = "ならば"
+    thenText.id = "thenText"
     thenText.style.fontSize = '12px'
     thenText.style.fontWeight = 'bold'
     thenText.style.position = 'absolute'
@@ -35,6 +37,7 @@ export class IfElseOuterBlock extends OuterBlock {
 
     const elseText = document.createElement('span')
     elseText.innerText = "そうでなければ"
+    elseText.id = "elseText"
     elseText.style.fontSize = '12px'
     elseText.style.fontWeight = 'bold'
     elseText.style.position = 'absolute'
@@ -61,5 +64,53 @@ export class IfElseOuterBlock extends OuterBlock {
       children[1][0].connectedNextBlocks().map((block) => block.getExpression()),
       children[2][0].connectedNextBlocks().map((block) => block.getExpression())
     )
+  }
+
+  public innerConnect(tryingToSetChildBlock: Block) {
+    super.innerConnect(tryingToSetChildBlock);
+    const blockPositions = Array.from(this.childrenPositions.keys())
+
+    const secondBlockPosition = blockPositions[1]
+    let thenIndex = this.findThenText() 
+    const thenText = this.element.children[thenIndex] as HTMLElement
+    thenText.style.top = secondBlockPosition.y - 20 + 'px'
+
+    const thirdBlockPosition = blockPositions[2]
+    let elseIndex = this.findElseText()
+    const elseText = this.element.children[elseIndex] as HTMLElement
+    elseText.style.top = thirdBlockPosition.y - 20 + 'px'
+
+    if (elseIndex > thenIndex) {
+      this.element.children[elseIndex]
+      this.element.children[thenIndex]
+    }else {
+      this.element.children[thenIndex]
+      this.element.children[elseIndex]
+    }
+
+    this.element.appendChild(thenText)
+    this.element.appendChild(elseText)
+
+    console.log(this.element.children)
+  }
+
+  private findThenText() : number {
+    for (let i = 0; i < this.element.children.length; i++) {
+      const prevHTMLElement = this.element.children[i] as HTMLElement
+      if (prevHTMLElement.id == "thenText") {
+        return i
+      }
+    }
+    return -1
+  }
+
+  private findElseText() : number {
+    for (let i = 0; i < this.element.children.length; i++) {
+      const prevHTMLElement = this.element.children[i] as HTMLElement
+      if (prevHTMLElement.id == "elseText") {
+        return i
+      }
+    }
+    return -1
   }
 }
