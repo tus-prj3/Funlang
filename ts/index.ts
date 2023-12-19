@@ -15,6 +15,8 @@ import {IfOuterBlock} from "./block/condition/IfOuterBlock";
 import {IfElseOuterBlock} from "./block/condition/IfElseOuterBlock";
 import {ClosureOuterBlock} from "./block/function/ClosureOuterBlock";
 import {RecFunctionOuterBlock} from "./block/function/RecFunctionOuterBlock";
+import { whileOuterBlock } from "./block/WhileOuterBlock";
+import { ForOuterBlock } from "./block/ForOuterBlock";
 
 const numberButton = document.getElementById('number')
 const logButton = document.getElementById('log')
@@ -34,6 +36,9 @@ const ifElseButton = document.getElementById('if-else')
 const deleteButton = document.getElementById('deleteAll');
 const clearButton = document.getElementById('clear')
 const customMenu = document.getElementById('customMenu')
+const loopButton = document.getElementById('loop')
+const loop2Button = document.getElementById('loop2')
+
 
 export const blockStore = new BlockStore()
 
@@ -166,4 +171,16 @@ clearButton!.onclick = (_) => {
   const console = document.getElementById('result_text_area')! as HTMLTextAreaElement
   console.value = ''
   ConsoleStore.outputCount = 0
+}
+
+loopButton!.onclick = (_) => {
+  blockStore.blocks.push(
+    new whileOuterBlock()
+  )
+}
+
+loop2Button!.onclick = (_) => {
+  blockStore.blocks.push(
+    new ForOuterBlock(2)
+  )
 }

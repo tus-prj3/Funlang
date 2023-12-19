@@ -98,3 +98,4 @@ export interface IAssignOperatorExpression extends IExpression {
 export enum AssignOperator {
   "ASSIGN"
 }
+

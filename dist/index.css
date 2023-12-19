@@ -72,6 +72,7 @@ html, body {
 }
 
 .button_run {
+.link a{
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.5;
@@ -89,15 +90,33 @@ html, body {
   vertical-align: middle;
   text-decoration: none;
   letter-spacing: 0.1em;
-  color: #3f474e;
+  color: #ffffff;
   border-radius: 4px;
-  background: rgb(255, 255, 100);
+  background: rgb(0, 0, 0);
   border-bottom: solid 5px gray;
- }
- .button_run:active {
+}
+
+.link a:active {
   -webkit-transform: translateY(5px);
   transform: translateY(5px);
   border-bottom: none;
+}
+
+#workspace {
+  position: relative;
+  width: 100%; 
+  margin: 8px;
+  border: 2px solid black;
+  overflow: auto;
+}
+
+#buttonArea {
+  position: relative;
+  width: 980px;
+  height: 200px; 
+  margin: 8px;
+  border: 2px solid black;
+  overflow: auto;
 }
 
 .button_run {
@@ -120,7 +139,7 @@ html, body {
   letter-spacing: 0.1em;
   color: #3f474e;
   border-radius: 4px;
-  background: yellow;
+  background: rgb(255, 255, 100);
   border-bottom: solid 5px gray;
  }
  .button_run:active {
