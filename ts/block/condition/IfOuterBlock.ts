@@ -1,3 +1,4 @@
+import { Block } from "../base/Block";
 import {OuterBlock} from "../base/OuterBlock";
 import {IExpression} from "../../expression/interface/INode";
 import {Vec2} from "../../types/Vec2";
@@ -16,6 +17,7 @@ export class IfOuterBlock extends OuterBlock {
 
     const ifText = document.createElement('span')
     ifText.innerText = "もし"
+    ifText.id = "ifText"
     ifText.style.fontSize = '12px'
     ifText.style.fontWeight = 'bold'
     ifText.style.position = 'absolute'
@@ -25,6 +27,7 @@ export class IfOuterBlock extends OuterBlock {
 
     const thenText = document.createElement('span')
     thenText.innerText = "ならば"
+    thenText.id = "thenText"
     thenText.style.fontSize = '12px'
     thenText.style.fontWeight = 'bold'
     thenText.style.position = 'absolute'
@@ -47,5 +50,27 @@ export class IfOuterBlock extends OuterBlock {
     return new FIfStatement(
       (children[0][0] as ComparisonOuterBlock).getExpression(), children[1][0].connectedNextBlocks().map((block) => block.getExpression())
     )
+  }
+
+  public innerConnect(tryingToSetChildBlock: Block) {
+    super.innerConnect(tryingToSetChildBlock);
+    const blockPositions = Array.from(this.childrenPositions.keys())
+    const secondBlockPosition = blockPositions[1]
+    let index = this.findThenText()
+    const thenText = this.element.children[index] as HTMLElement
+    console.log(thenText)
+    this.element.children[index].remove()
+    thenText.style.top = secondBlockPosition.y - 20 + 'px'
+    this.element.appendChild(thenText)
+  }
+
+  private findThenText() : number {
+    for (let i = 0; i < this.element.children.length; i++) {
+      const prevHTMLElement = this.element.children[i] as HTMLElement
+      if (prevHTMLElement.id == "thenText") {
+        return i
+      }
+    }
+    return -1
   }
 }
