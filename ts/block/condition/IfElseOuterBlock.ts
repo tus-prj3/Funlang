@@ -90,8 +90,6 @@ export class IfElseOuterBlock extends OuterBlock {
 
     this.element.appendChild(thenText)
     this.element.appendChild(elseText)
-
-    console.log(this.element.children)
   }
 
   private findThenText() : number {

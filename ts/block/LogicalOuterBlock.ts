@@ -1,3 +1,4 @@
+import { Block } from "./base/Block";
 import {OuterBlock} from "./base/OuterBlock";
 import {INode, LogicalOperator} from "../expression/interface/INode";
 import {Vec2} from "../types/Vec2";
@@ -26,6 +27,7 @@ export class LogicalOuterBlock extends OuterBlock {
         letText.style.left = '5px'
 
         this.op = document.createElement('select')
+        this.op.id = "op"
         this.op.add(
             new Option('&&', 'and'),
         )
@@ -63,4 +65,25 @@ export class LogicalOuterBlock extends OuterBlock {
             logical!, (children[0][0] as NumberBlock).getExpression(), (children[1][0] as NumberBlock).getExpression()
         )
     }
+
+    public innerConnect(tryingToSetChildBlock: Block) {
+        super.innerConnect(tryingToSetChildBlock);
+        const blockPositions = Array.from(this.childrenPositions.keys())
+        const secondBlockPosition = blockPositions[1]
+        let index = this.findOp()
+        const op = this.element.children[index] as HTMLElement
+        this.element.children[index].remove()
+        op.style.top = secondBlockPosition.y - 20 + 'px'
+        this.element.appendChild(op)
+      }
+    
+      private findOp() : number {
+        for (let i = 0; i < this.element.children.length; i++) {
+          const prevHTMLElement = this.element.children[i] as HTMLElement
+          if (prevHTMLElement.id == "op") {
+            return i
+          }
+        }
+        return -1
+      }
 }
