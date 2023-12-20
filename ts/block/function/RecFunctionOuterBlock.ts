@@ -1,3 +1,4 @@
+import { Block } from "../base/Block";
 import {Vec2} from "../../types/Vec2";
 import {blockStore} from "../../index";
 import {BlockPosition} from "../../interface/IBlockPosition";
@@ -24,16 +25,17 @@ export class RecFunctionOuterBlock extends OuterBlock {
     this.functionName = functionName
 
     const inputText = document.createElement('span')
-    inputText.innerText = "変数は:"
+    inputText.innerText = "引数:"
     inputText.style.fontSize = '12px'
     inputText.style.fontWeight = 'bold'
     inputText.style.position = 'absolute'
     inputText.style.color = 'white'
-    inputText.style.top = '30px'
+    inputText.style.top = '34px'
     inputText.style.left = '5px'
 
     const doText = document.createElement('span')
-    doText.innerText = 'do'
+    doText.innerText = '処理'
+    doText.id = 'doText'
     doText.style.fontSize = '12px'
     doText.style.fontWeight = 'bold'
     doText.style.position = 'absolute'
@@ -94,5 +96,27 @@ export class RecFunctionOuterBlock extends OuterBlock {
       this.functionName, children[0][0].connectedNextBlocks().map((block) => (block as VariableBlock).getExpression()),
       children[1].map((block) => block.getExpression())
     )
+  }
+
+  public innerConnect(tryingToSetChildBlock: Block) {
+    super.innerConnect(tryingToSetChildBlock);
+    const blockPositions = Array.from(this.childrenPositions.keys())
+    const secondBlockPosition = blockPositions[1]
+    let Doindex = this.findDoText()
+    const thenText = this.element.children[Doindex] as HTMLElement
+    console.log(thenText)
+    this.element.children[Doindex].remove()
+    thenText.style.top = secondBlockPosition.y - 20 + 'px'
+    this.element.appendChild(thenText)
+  }
+
+  private findDoText() : number {
+    for (let i = 0; i < this.element.children.length; i++) {
+      const prevHTMLElement = this.element.children[i] as HTMLElement
+      if (prevHTMLElement.id == "doText") {
+        return i
+      }
+    }
+    return -1
   }
 }

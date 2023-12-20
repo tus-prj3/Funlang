@@ -3,7 +3,7 @@ import {IExpression, IStatement} from "../../expression/interface/INode";
 import {Vec2} from "../../types/Vec2";
 import {blockStore} from "../../index";
 import {BlockPosition} from "../../interface/IBlockPosition";
-import {FUNCTION} from "../../types/Color";
+import {RETURN} from "../../types/Color";
 import {FReturnStatement} from "../../expression/FNode";
 
 export class ReturnOuterBlock extends OuterBlock {
@@ -29,7 +29,7 @@ export class ReturnOuterBlock extends OuterBlock {
 
     this.element.appendChild(printText)
 
-    this.element.style.background = FUNCTION
+    this.element.style.background = RETURN
   }
 
   validate(): boolean {
