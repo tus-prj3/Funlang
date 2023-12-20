@@ -2,5 +2,6 @@
 /.idea
 /dist/*
 !/dist/index.html
+!/dist/property.html
 !/dist/index.css
 .DS_Store
