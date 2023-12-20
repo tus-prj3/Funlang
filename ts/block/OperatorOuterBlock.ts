@@ -40,6 +40,9 @@ export class OperatorOuterBlock extends OuterBlock {
     this.op.add(
       new Option('×', 'multi')
     )
+    this.op.add(
+      new Option('%', 'remain')
+    )
     this.op.style.fontSize = '12px'
     this.op.style.fontWeight = 'bold'
     this.op.style.position = 'absolute'
@@ -75,6 +78,9 @@ export class OperatorOuterBlock extends OuterBlock {
         break
       case 'multi':
         operator = Operator.MULTIPLY
+        break
+      case 'remain':
+        operator = Operator.REMAINDER
         break
     }
     return new FOperatorExpression(

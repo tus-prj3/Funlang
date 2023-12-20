@@ -237,6 +237,8 @@ export class Interpreter {
         return left * right
       case Operator.DIVISION:
         return left / right
+      case Operator.REMAINDER:
+        return left % right
     }
   }
 

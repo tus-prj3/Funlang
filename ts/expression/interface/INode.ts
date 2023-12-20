@@ -66,7 +66,7 @@ export interface IOperatorExpression extends IExpression {
   right: IExpression
 }
 export enum Operator {
-  "PLUS", "MINUS", "MULTIPLY", "DIVISION"
+  "PLUS", "MINUS", "MULTIPLY", "DIVISION", "REMAINDER"
 }
 
 export interface IComparisonExpression extends IExpression {
