@@ -26,11 +26,24 @@ h2 {
   background: aliceblue;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.23);
 }
-
 .simple_block {
   background: aqua;
   position: absolute;
   cursor: move;
+  box-sizing: border-box;
+}
+
+.block_without_color {
+  position: absolute;
+  cursor: move;
+  box-sizing: border-box;
+  border: 0px;
+  border-radius: 4px;
+}
+
+.block_child_notify {
+  background: lightgray;
+  position: absolute;
   box-sizing: border-box;
 }
 
